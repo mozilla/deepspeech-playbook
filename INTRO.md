@@ -5,7 +5,9 @@ If you're trying to get DeepSpeech working for a new language, you've come to th
 
 ## Setting Expectations
 
-You might think that Speech Recognition is solved for English, and as such, with a little work you can solve Speech Recognition for a new language. This is false for two reasons. First, Speech Recognition is far from solved for English, and second it is unlikely you will be able to create something that works as well as a pre-trained English DeepSpeech model. However, you can still make create useful voice technology for a non-English language!
+You might think that Speech Recognition is solved for English, and as such, with a little work you can solve Speech Recognition for a new language. This is false for two reasons. First, Speech Recognition is far from solved for English, and second it is unlikely you will be able to create something that works as well as a pre-trained English DeepSpeech model.
+
+Nevertheless, you can still make create useful voice technology for a non-English language!
 
 ## Setting up for Success
 
