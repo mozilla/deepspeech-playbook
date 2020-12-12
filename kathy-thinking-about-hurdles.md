@@ -60,5 +60,32 @@ Tutorial on setting up `docker` image to run on cloud infrastructure. Will need 
 * User is using cloud compute with GPU or possibly TPU capabilities 
 * User will be familiar with Docker from the previous tutorial 
 
-### 
+### Working with checkpoints 
+
+> I don't know how checkpoints work well enough to flesh out tutorial ideas 
+
+### Working with hyperparameters 
+
+> I don't know how hyperparamters work in DeepSpeech well enough to flesh out tutorial ideas 
+
+### Exporting a model for embedded applications with TFlite 
+
+#### Problem outline 
+
+A key use case for DeepSpeech is to use it in embedded inference applications, for example on embedded hardware. The key way to do this is to export using `TFLite` but this can be tricky _I don't know exactly the trickiness involved_ 
+ 
+#### Tutorial to address problem 
+
+Using the model(s) trained in previous tutorials, export them to `TFlite` and then use some sort of embedded hardware (possibly an RPi) to demonstrate how to use `TFLite` for inference. 
+
+### Augmentations 
+
+> I don't know enough about augmentations to be able to offer useful feedback here
+
+### External scorer and languages models 
+
+> I don't know enough about the External Scorer and langauge models to offer useful feedback here 
+
+
+
 
