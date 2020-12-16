@@ -4,12 +4,13 @@ Learning how to train a speech to text model with DeepSpeech can have a high lea
 
 We're anticipating that the Playbook will have the following broad sections: 
 
-* What is Speech to Text?
+* Fundamentals of Speech-to-Text
 * Data collection
 * Data formatting
-* Training
-* Testing
-* Model Evaluation
+* Model training
+* Model fine-tuning
+* Model testing (quantitative)
+* Model evaluation (qualitative)
 
 As people using DeepSpeech - and wrangling some of its quirks and hurdles - every day, you will know best what content the Playbook needs to include. We'd love to hear from you about the specific challenges you face using DeepSpeech, particularly those encountered as you were training your first models. What are the one or two things that you had to learn the hard way and wished there was a walkthrough for? Did you take notes that we might be able to use? 
 
