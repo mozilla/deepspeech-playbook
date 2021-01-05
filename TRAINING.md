@@ -77,7 +77,7 @@ $ sudo docker rm 3ab7c98a9e5b
 
 ---
 
-@todo not sure if this section sits better in the ENVIRONMENT.md file
+@todo not sure if this section sits better in the ENVIRONMENT.md file, I will get Josh's thoughts
 
 ---
 
@@ -200,6 +200,6 @@ python3 DeepSpeech.py \
 
   - fine tuning a model or doing transfer learning
   - setting the number of epochs and _how_ to set the number of epochs
-  - should the `feature_cache` be set to be on the persistent storage? 
+  - should the `feature_cache` be set to be on the persistent storage?
 
 ---
