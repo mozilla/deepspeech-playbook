@@ -1,10 +1,6 @@
-# Setting up your Python virtual environment for training using DeepSpeech
+# Setting up your environment for training using DeepSpeech
 
-This section of the Playbook assumes you are comfortable installing DeepSpeech and using it with a pre-trained model; here we provide information on setting up a Docker environment for training your own speech recognition model using DeepSpeech.
-
-## Table of contents
-
-@todo add ToC for this page
+This section of the Playbook assumes you are comfortable installing DeepSpeech and using it with a pre-trained model, and that you are comfortable setting up a Python _virtual environment_; here we provide information on setting up a Docker environment for training your own speech recognition model using DeepSpeech.
 
 ## What is Docker and why is it recommended for training a model with DeepSpeech?
 
@@ -16,7 +12,7 @@ First, [follow the DeepSpeech documentation to create and activate a virtual env
 
 ---
 
-@todo do we have a heuristic for the volume of data that can be reasonably trained using a CPU only? Obviously the CPU itself and the number of cores it has will influence this significantly, but I wonder if there are any rules of thumb? That way, we can say here that
+@todo do we have a heuristic for the volume of data that can be reasonably trained using a CPU only? Obviously the CPU itself and the number of cores it has will influence this significantly, but I wonder if there are any rules of thumb? That way, we can say here that if you have just a CPU then it's probably not worth spinning up a Docker container to train in.
 
 ---
 
