@@ -12,4 +12,21 @@ Quite simply, `alphabet.txt` helps DeepSpeech make a lookup table, and at run-ti
 
 ### How to diagnose mis-matched alphabets?
 
-If you think you used different alphabets to create a language model and an acoustic model, try decoding without the scorer. If you can decode the audio without a scorer and the output is reasonable, but when you decode the same audio with a scorer, and the output is not reasonable, then you could have mis-matched alphabets. Usually the easiest way to fix this is to re-compile the scorer with the correct alphabet. 
+If you think you used different alphabets to create a language model and an acoustic model, try decoding without the scorer. If you can decode the audio without a scorer and the output is reasonable, but when you decode the same audio with a scorer, and the output is not reasonable, then you could have mis-matched alphabets. Usually the easiest way to fix this is to re-compile the scorer with the correct alphabet.
+
+---
+
+@todo I probably need to give an example of how to do this but I'm not sure where to start
+
+---
+
+
+## Common alphabet.txt related errors
+
+One of the most common errors occurs when there is a character in the corpus that is not in the `alphabet.txt` file. You need to include the missing character in the `alphabet.txt` file.
+
+```
+File "/DeepSpeech/training/deepspeech_training/util/text.py", line 18, in text_to_char_array
+  .format(transcript, context, list(ch for ch in transcript if not alphabet.CanEncodeSingle(ch))))
+ValueError: Alphabet cannot encode transcript "panggil ambulan！" while processing sample "persistent-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_19338419.wav", check that your alphabet contains all characters in the training corpus. Missing characters are: ['！'].
+```
