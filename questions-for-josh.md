@@ -20,6 +20,10 @@ Some of the sections like ENVIRONMENT.md are quite long. My recommendation would
 
 It feels like with the way the content is laid out that having a section on _collecting data_ would be worthwhile. This might just link to the CV Playbook. This section would sit before [DATA_FORMATTING.md](DATA_FORMATTING.md).
 
+## Data formatting section
+
+Are there any other common errors with data formatting that should be covered here?
+
 ## Environment section
 
 Do the instructions that are currently in the training section around setting up persistent storage on Docker through a Docker volume sit better in the ENVIRONMENT.md section?
