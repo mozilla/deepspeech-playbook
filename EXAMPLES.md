@@ -1,6 +1,6 @@
 # Example applications of DeepSpeech
 
-The pssibilities are endless, but here's some concrete examples of how you might integrate Speech-to-Text with DeepSpeech into your application.
+The possibilities are endless, but here's some concrete examples of how you might integrate Speech-to-Text with DeepSpeech into your application.
 
 ## A stand-alone transcription tool
 
