@@ -109,8 +109,10 @@ We now have a place to persistently store both the data for our model and the tr
 Now, we create a Docker container and attach the persistent volume, using this command. Note that the reference to your particular Docker image - here shown as `c2ec2476fedb` will be different.  
 
 ```
-$
-
+$ sudo docker run  -it \
+  --entrypoint /bin/bash \
+  --mount type=volume,source=deepspeech-data,target=/DeepSpeech/persistent-data c2ec2476fedb
+  
 ```
 
 This command creates the container, and mounts the `deepspeech-data` directory to the `/DeepSpeech/persistent-data` directory within the container, as seen below:
