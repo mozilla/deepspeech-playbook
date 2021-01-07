@@ -112,7 +112,7 @@ Now, we create a Docker container and attach the persistent volume, using this c
 $ sudo docker run  -it \
   --entrypoint /bin/bash \
   --mount type=volume,source=deepspeech-data,target=/DeepSpeech/persistent-data c2ec2476fedb
-  
+
 ```
 
 This command creates the container, and mounts the `deepspeech-data` directory to the `/DeepSpeech/persistent-data` directory within the container, as seen below:
@@ -193,7 +193,7 @@ python3 DeepSpeech.py \
   --dev_files persistent-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
   --test_files persistent-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
   --checkpoint_dir persistent-data/checkpoints \
-  --export-dir persistent-data/exported-model
+  --export_dir persistent-data/exported-model
 ```
 
 ---
