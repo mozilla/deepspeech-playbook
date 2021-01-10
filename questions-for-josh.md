@@ -30,7 +30,28 @@ Do the instructions that are currently in the training section around setting up
 
 ## Training section
 
-I think I need to include more examples of the options that can be used with `DeepSpeech.py`. Can we chat about which ones are important?
+* I think I need to include more examples of the options that can be used with `DeepSpeech.py`. Can we chat about which ones are important?
+
+* I don't think that the Docker container I'm using is _actually using the GPU, but is training on the CPU instead_. The reason I think this is that I installed `nvtop` to monitor the usage of my GPU, and it's at about 20% of utilisation. Training a model the GPU should be nearly at 100% utilisation. I I run `htop` then my 8 x CPUs are pretty much tied up with a `DeepSpeech.py` process. So I think it's training on the CPUs, not the GPU.
+
+* Not sure how to force Docker to train with a GPU. Had a look at the `Dockerfile` and it states:
+
+```
+# Install DeepSpeech
+#  - No need for the decoder since we did it earlier
+#  - There is already correct TensorFlow GPU installed on the base image,
+#    we don't want to break that
+RUN DS_NODECODER=y DS_NOTENSORFLOW=y pip3 install --upgrade -e .
+```
+
+so I think it's expecting Tensorflow to already be there. But I _don't think the Dockerfile is handling `CUDA` deps properly so I did a bit of digging around on blogs, such as this one:
+
+https://blog.roboflow.com/use-the-gpu-in-docker/
+
+```
+FROM nvidia/cuda:10.2-base
+CMD nvidia-smi
+```
 
 ## Testing section
 
