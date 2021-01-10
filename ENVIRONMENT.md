@@ -1,6 +1,104 @@
 # Setting up your environment for training using DeepSpeech
 
-This section of the Playbook assumes you are comfortable installing DeepSpeech and using it with a pre-trained model, and that you are comfortable setting up a Python _virtual environment_; here we provide information on setting up a Docker environment for training your own speech recognition model using DeepSpeech.
+This section of the Playbook assumes you are comfortable installing DeepSpeech and using it with a pre-trained model, and that you are comfortable setting up a Python _virtual environment_. Here, we provide information on setting up a Docker environment for training your own speech recognition model using DeepSpeech. We also cover dependencies Docker has for NVIDIA GPUs, so that you can use your GPU(s) for training a model.
+
+You _can_ use CPU(s) only for training, but this will be _much_ slower.
+
+## Installing dependencies for working with GPUs under Docker
+
+Before we install Docker, we are going to make sure that we have all the Ubuntu Linux dependencies required for working with NVIDIA GPUs and Docker.
+
+---
+@todo what if someone has a non-NVIDIA GPU? Personally I think they're so rare that we should just assume NVIDIA GPUs.
+---
+
+### GPU drivers
+
+By default, your machine should already have GPU drivers installed. A good way to check is with the `nvidia-smi` tool. If your drivers are installed correctly, `nvidia-smi` will report the driver version and CUDA version.
+
+```
+$ nvidia-smi
+
+Sat Jan  9 11:48:50 2021       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 450.80.02    Driver Version: 450.80.02    CUDA Version: 11.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 1060    Off  | 00000000:01:00.0  On |                  N/A |
+| N/A   70C    P0    27W /  N/A |    766MiB /  6069MiB |      2%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|    0   N/A  N/A      1098      G   /usr/lib/xorg/Xorg                 35MiB |
+|    0   N/A  N/A      2799      G   /usr/lib/xorg/Xorg                348MiB |
+|    0   N/A  N/A      2939      G   /usr/bin/gnome-shell              200MiB |
+|    0   N/A  N/A     25790      G   ...token=4412988484634553693       46MiB |
+|    0   N/A  N/A     88321      G   ...yreid/firefox/firefox-bin        1MiB |
+|    0   N/A  N/A     88585      G   ...yreid/firefox/firefox-bin        1MiB |
+|    0   N/A  N/A     88629      G   ...yreid/firefox/firefox-bin        1MiB |
+|    0   N/A  N/A     88633      G   ...yreid/firefox/firefox-bin        1MiB |
+|    0   N/A  N/A     88636      G   ...yreid/firefox/firefox-bin        1MiB |
+|    0   N/A  N/A     88644      G   ...yreid/firefox/firefox-bin        1MiB |
+|    0   N/A  N/A     88649      G   ...yreid/firefox/firefox-bin        1MiB |
+|    0   N/A  N/A     88653      G   ...yreid/firefox/firefox-bin        1MiB |
+|    0   N/A  N/A    589047      G   ...e/Steam/ubuntu12_32/steam       10MiB |
+|    0   N/A  N/A    589210      G   ./steamwebhelper                    1MiB |
+|    0   N/A  N/A    589231      G   ...e Steam Client --lang=en_       11MiB |
+|    0   N/A  N/A   2901345      G   /usr/lib/firefox/firefox            1MiB |
+|    0   N/A  N/A   2901358      G   /usr/lib/firefox/firefox            1MiB |
+|    0   N/A  N/A   2901366      G   /usr/lib/firefox/firefox            3MiB |
+|    0   N/A  N/A   3112017      G   .../debug.log --shared-files       46MiB |
+|    0   N/A  N/A   3275236      G   ...AAAAAAAA== --shared-files       28MiB |
++-----------------------------------------------------------------------------+
+
+```
+
+If your drivers are _not_ installed correctly, you will likely see this warning:
+
+```
+$ nvidia-smi
+
+Command 'nvidia-smi' not found, but can be installed with:
+
+sudo apt install nvidia-utils-440         # version 440.100-0ubuntu0.20.04.1, or
+sudo apt install nvidia-340               # version 340.108-0ubuntu2
+sudo apt install nvidia-utils-435         # version 435.21-0ubuntu7
+sudo apt install nvidia-utils-390         # version 390.141-0ubuntu0.20.04.1
+sudo apt install nvidia-utils-450         # version 450.102.04-0ubuntu0.20.04.1
+sudo apt install nvidia-utils-450-server  # version 450.80.02-0ubuntu0.20.04.3
+sudo apt install nvidia-utils-460         # version 460.32.03-0ubuntu0.20.04.1
+sudo apt install nvidia-utils-418-server  # version 418.152.00-0ubuntu0.20.04.1
+sudo apt install nvidia-utils-440-server  # version 440.95.01-0ubuntu0.20.04.1
+
+```
+
+[Follow this guide](https://linuxconfig.org/how-to-install-the-nvidia-drivers-on-ubuntu-18-04-bionic-beaver-linux) to install your GPU drivers.
+
+Once you've installed your drivers, use `nvidia-smi` to prove that they are installed correctly.
+
+_Note that you may need to restart your host after installing the GPU drivers._
+
+Next, we will install the utility `nvtop` so that you can monitor the performance of your GPU(s). We will also use `nvtop` to prove that Docker is able to use your GPU(s) later in this document.
+
+```
+$ sudo apt install nvtop
+```
+
+_Note that you may need to restart your host after installing `nvtop`._
+
+If you run `nvtop` you will see a graph similar to this:
+
+![Screenshot of nvtop](images/nvtop.png "Screenshot of nvtop")
+
+You are now ready to install Docker.
 
 ## What is Docker and why is it recommended for training a model with DeepSpeech?
 
@@ -31,17 +129,35 @@ $ cp Dockerfile.train Dockerfile
 ```
 
 
-## Install Docker and build a Docker image for DeepSpeech
+## Install Docker
 
 First, you must install Docker on your host. Follow the [instructions on the Docker website](https://docs.docker.com/engine/install/ubuntu/).
 
----
 
-@todo this assumes Ubuntu Linux, is this reasonable?
+### Install the `nvidia-container-toolkit`
 
----
+Next, we need to install `nvidia-container-toolkit`. This is necessary to allow Docker to be able to access the GPU(s) on your machine for training.
 
-Once you have installed Docker, you are ready to build a Docker image using the `Dockerfile`. Once the image is built, you can then run the Docker container to perform training.
+First, add the repository for your distribution, following the instructions on the [NVIDIA Docker GitHub page](https://nvidia.github.io/nvidia-docker/). For example:
+
+```
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
+  sudo apt-key add -
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update
+```
+
+Next, install `nvidia-container-toolkit`:
+
+```
+$ sudo apt-get install -y nvidia-container-toolkit
+```
+
+## Build the Docker image
+
+Once you have installed Docker and the `nvidia-container-toolkit`, you are ready to build a Docker image using the `Dockerfile`. Once the image is built, you can then run the Docker container to perform training.
 
 **WARNING: This command will cause several gigabytes of data to be downloaded. Do not do this if you are on a metered internet connection.**
 
