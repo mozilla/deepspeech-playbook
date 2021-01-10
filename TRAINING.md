@@ -196,6 +196,12 @@ python3 DeepSpeech.py \
   --export_dir persistent-data/exported-model
 ```
 
+### Monitoring GPU use with `nvtop`
+
+In a separate terminal (ie not from the session where you have the Docker container open), run the command `nvtop`. You should see the `DeepSpeech.py` process consuming all available GPUs.
+
+If you _do not_ see the GPU(s) being heavily utilised, you may be training only on your CPUs and you should double check your [environment](ENVIRONMENT.md). 
+
 ---
 
 @todo want to chat with Josh what else should be in this training file such as
