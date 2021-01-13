@@ -111,6 +111,7 @@ Now, we create a Docker container and attach the persistent volume, using this c
 ```
 $ sudo docker run  -it \
   --entrypoint /bin/bash \
+  --gpus all \
   --mount type=volume,source=deepspeech-data,target=/DeepSpeech/persistent-data c2ec2476fedb
 
 ```
@@ -200,7 +201,7 @@ python3 DeepSpeech.py \
 
 In a separate terminal (ie not from the session where you have the Docker container open), run the command `nvtop`. You should see the `DeepSpeech.py` process consuming all available GPUs.
 
-If you _do not_ see the GPU(s) being heavily utilised, you may be training only on your CPUs and you should double check your [environment](ENVIRONMENT.md). 
+If you _do not_ see the GPU(s) being heavily utilised, you may be training only on your CPUs and you should double check your [environment](ENVIRONMENT.md).
 
 ---
 
