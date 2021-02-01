@@ -1,4 +1,15 @@
-# alphabet.txt
+[Home](README.md) | [Next - Formatting your training data](DATA_FORMATTING.md) | [Next - Acoustic Model and Language Model](AM_vs_LM.md)
+
+# The alphabet.txt file
+
+## Contents
+
+- [The alphabet.txt file](#the-alphabettxt-file)
+  * [Contents](#contents)
+  * [What is alphabet.txt ?](#what-is-alphabettxt--)
+  * [How does the Glue work?](#how-does-the-glue-work-)
+    + [How to diagnose mis-matched alphabets?](#how-to-diagnose-mis-matched-alphabets-)
+  * [Common alphabet.txt related errors](#common-alphabettxt-related-errors)
 
 This tiny text file is easy to overlook, but it is very important. The *exact same* alphabet must be used to train the both acoustic model and the language model. This alphabet.txt is the glue that holds the language model and the acoustic model together.
 
@@ -30,3 +41,7 @@ File "/DeepSpeech/training/deepspeech_training/util/text.py", line 18, in text_t
   .format(transcript, context, list(ch for ch in transcript if not alphabet.CanEncodeSingle(ch))))
 ValueError: Alphabet cannot encode transcript "panggil ambulan！" while processing sample "persistent-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_19338419.wav", check that your alphabet contains all characters in the training corpus. Missing characters are: ['！'].
 ```
+
+---
+
+[Home](README.md) | [Next - Formatting your training data](DATA_FORMATTING.md) | [Next - Acoustic Model and Language Model](AM_vs_LM.md)

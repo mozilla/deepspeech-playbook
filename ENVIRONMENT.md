@@ -1,4 +1,20 @@
+[Home](README.md) | [Previous - Acoustic Model and Language Model](AM_vs_LM.md) | [Next - Training your model](TRAINING.md)
+
 # Setting up your environment for training using DeepSpeech
+
+## Contents
+
+- [Setting up your environment for training using DeepSpeech](#setting-up-your-environment-for-training-using-deepspeech)
+  * [Contents](#contents)
+  * [Installing dependencies for working with GPUs under Docker](#installing-dependencies-for-working-with-gpus-under-docker)
+  * [@todo what if someone has a non-NVIDIA GPU? Personally I think they're so rare that we should just assume NVIDIA GPUs.](#-todo-what-if-someone-has-a-non-nvidia-gpu--personally-i-think-they-re-so-rare-that-we-should-just-assume-nvidia-gpus)
+    + [GPU drivers](#gpu-drivers)
+  * [What is Docker and why is it recommended for training a model with DeepSpeech?](#what-is-docker-and-why-is-it-recommended-for-training-a-model-with-deepspeech-)
+  * [Creating a virtual environment and clone DeepSpeech](#creating-a-virtual-environment-and-clone-deepspeech)
+  * [Create and rename the Dockerfile](#create-and-rename-the-dockerfile)
+  * [Install Docker](#install-docker)
+    + [Install the `nvidia-container-toolkit`](#install-the--nvidia-container-toolkit-)
+  * [Build the Docker image](#build-the-docker-image)
 
 This section of the Playbook assumes you are comfortable installing DeepSpeech and using it with a pre-trained model, and that you are comfortable setting up a Python _virtual environment_. Here, we provide information on setting up a Docker environment for training your own speech recognition model using DeepSpeech. We also cover dependencies Docker has for NVIDIA GPUs, so that you can use your GPU(s) for training a model.
 
@@ -219,8 +235,4 @@ The `tensorflow` Docker image is a _child_ image of the DeepSpeech Docker image.
 
 You are now ready to begin training your model.
 
----
-
-@todo not sure if these pages will be sequential, but it makes sense to have a "next" page
-
----
+[Home](README.md) | [Previous - Acoustic Model and Language Model](AM_vs_LM.md) | [Next - Training your model](TRAINING.md)
