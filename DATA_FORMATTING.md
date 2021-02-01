@@ -1,4 +1,13 @@
-# Data formatting for DeepSpeech
+[Home](README.md) | [Previous - About DeepSpeech](DEEPSPEECH.md) | [Next - The alphabet.txt file](ALPHABET.md)
+
+# Formatting your training data for DeepSpeech
+
+## Contents
+
+- [Formatting your training data for DeepSpeech](#formatting-your-training-data-for-deepspeech)
+  * [Contents](#contents)
+  * [Preparing your data for training](#preparing-your-data-for-training)
+    + [Data from Common Voice](#data-from-common-voice)
 
 DeepSpeech expects audio files to be WAV format, mono-channel, and with a 16kHz sampling rate.
 
@@ -39,10 +48,12 @@ Next, we will run the Common Voice importer that ships with DeepSpeech.
 root@3de3afbe5d6f:/DeepSpeech# bin/import_cv2.py persistent_data/cv-corpus-6.1-2020-12-11/id
 ```
 
-This will process all the CV data into the `clips` directory, and it can now be used [for training](TRAINING.md). 
+This will process all the CV data into the `clips` directory, and it can now be used [for training](TRAINING.md).
 
 ---
 
 @todo are there any common errors in data formatting that we should cover at this point?
 
 ---
+
+[Home](README.md) | [Previous - About DeepSpeech](DEEPSPEECH.md) | [Next - The alphabet.txt file](ALPHABET.md)

@@ -1,10 +1,20 @@
+[Home](README.md) | [Previous - Setting up your DeepSpeech training environment](ENVIRONMENT.md) | [Next - Testing your model](TESTING.md)
+
 # Training a DeepSpeech model
 
----
+## Contents
 
-@todo not sure if this information will be sequential - if so then something needs to go here that links to the [environment](ENVIRONMENT.md) page, which shows the developer how to build the DeepSpeech Docker image
-
----
+- [Training a DeepSpeech model](#training-a-deepspeech-model)
+  * [Contents](#contents)
+    + [Train using one of the sample scripts to ensure your Docker environment is functioning correctly](#train-using-one-of-the-sample-scripts-to-ensure-your-docker-environment-is-functioning-correctly)
+  * [Creating a Docker container with an attached volume so that you can access training data](#creating-a-docker-container-with-an-attached-volume-so-that-you-can-access-training-data)
+    + [Create the Docker volume](#create-the-docker-volume)
+    + [Creating a Docker container and attaching the persistent volume](#creating-a-docker-container-and-attaching-the-persistent-volume)
+  * [Copying training files into the Docker container](#copying-training-files-into-the-docker-container)
+  * [Running training](#running-training)
+    + [Specifying checkpoint directories so that you can restart training from a checkpoint](#specifying-checkpoint-directories-so-that-you-can-restart-training-from-a-checkpoint)
+    + [Specifying the directory that the trained model should be exported to](#specifying-the-directory-that-the-trained-model-should-be-exported-to)
+    + [Monitoring GPU use with `nvtop`](#monitoring-gpu-use-with--nvtop-)
 
 Now that you have your Docker image build, you can run the image as a container to train a model.
 
@@ -212,3 +222,5 @@ If you _do not_ see the GPU(s) being heavily utilised, you may be training only 
   - should the `feature_cache` be set to be on the persistent storage?
 
 ---
+
+[Home](README.md) | [Previous - Setting up your DeepSpeech training environment](ENVIRONMENT.md) | [Next - Testing your model](TESTING.md)

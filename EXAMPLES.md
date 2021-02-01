@@ -1,4 +1,14 @@
+[Home](README.md) | [Previous - Deploying your model](DEPLOYING.md)
+
 # Example applications of DeepSpeech
+
+## Contents
+
+- [Example applications of DeepSpeech](#example-applications-of-deepspeech)
+  * [Contents](#contents)
+  * [A stand-alone transcription tool](#a-stand-alone-transcription-tool)
+  * [Key Word Search in spoken audio](#key-word-search-in-spoken-audio)
+  * [An interface to a voice-controlled application](#an-interface-to-a-voice-controlled-application)
 
 The possibilities are endless, but here's some concrete examples of how you might integrate Speech-to-Text with DeepSpeech into your application.
 
@@ -13,3 +23,5 @@ Key Word Search in audio is a simple task, but it takes considerable time. Given
 ## An interface to a voice-controlled application
 
 The last example application of DeepSpeech is as an interface to a voice-controlled application. This is an instance where a successful application (e.g. a digital assistant or smart speaker) cannot contain a human-in-the-loop. As such, DeepSpeech is not making human-time more efficient, but rather, DeepSpeech is enabling technologies which were previously impossible.
+
+[Home](README.md) | [Previous - Deploying your model](DEPLOYING.md)

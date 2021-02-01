@@ -1,3 +1,14 @@
+[Home](README.md) | [Next - About DeepSpeech](DEEPSPEECH.md)
+
+# Introduction
+
+## Contents
+
+- [Introduction](#introduction)
+  * [Contents](#contents)
+  * [Is this guide for you?](#is-this-guide-for-you-)
+  * [Setting expectations](#setting-expectations)
+  * [Setting up for success](#setting-up-for-success)
 
 ## Is this guide for you?
 
@@ -38,3 +49,5 @@ If you have ever used a speech technology and it worked flawlessly, the creators
 @todo I feel like what this section needs is a _checklist_ or similar on all the things that somebody has to do to set themselves up for success. Is this something that you think I should build out?
 
 ---
+
+[Home](README.md) | [Next - About DeepSpeech](DEEPSPEECH.md)
