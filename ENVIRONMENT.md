@@ -134,12 +134,6 @@ You are now ready to install Docker.
 
 First, [follow the DeepSpeech documentation to create and activate a virtual environment and clone DeepSpeech into the environment](https://deepspeech.readthedocs.io/en/master/TRAINING.html). Install the DeepSpeech training code and dependencies.
 
----
-
-@todo do we have a heuristic for the volume of data that can be reasonably trained using a CPU only? Obviously the CPU itself and the number of cores it has will influence this significantly, but I wonder if there are any rules of thumb? That way, we can say here that if you have just a CPU then it's probably not worth spinning up a Docker container to train in.
-
----
-
 ## Create and rename the Dockerfile
 
 Follow the DeepSpeech documentation to make the `Dockerfile`, ie
@@ -159,6 +153,9 @@ $ cp Dockerfile.train Dockerfile
 
 First, you must install Docker on your host. Follow the [instructions on the Docker website](https://docs.docker.com/engine/install/ubuntu/).
 
+### Ensure that you create a `docker` group and that you add yourself to this group
+
+Once you have installed Docker, be sure to follow the [post-installation](https://docs.docker.com/engine/install/linux-postinstall/) steps. These include setting up a `docker` group and adding your user account to this group. If you do not follow this step, you will need to use `sudo` with every Docker command, and this can have unexpected results.
 
 ### Install the `nvidia-container-toolkit`
 
@@ -190,7 +187,7 @@ Once you have installed Docker and the `nvidia-container-toolkit`, you are ready
 Build the Docker image using the following command:
 
 ```
-(deepspeech-training-venv) $ sudo docker build -t deepspeech:0.9.3 .
+(deepspeech-training-venv) $ docker build -t deepspeech:0.9.3 .
 ```
 
 The `-t` flag allows us to tag the image using a name, in this case `deepspeech:0.9.3`. This is helpful if you want to build separate Docker images, for example for different versions of DeepSpeech.
@@ -229,10 +226,10 @@ Successfully built c2ec2476fedb
 Successfully tagged deepspeech:0.9.3
 ```
 
-If you see this message, your Docker image has been built correctly. You can verify this by running the command `sudo docker image ls` as below:
+If you see this message, your Docker image has been built correctly. You can verify this by running the command `docker image ls` as below:
 
 ```
-(deepspeech-training-venv) $ sudo docker image ls
+(deepspeech-training-venv) $ docker image ls
 
 REPOSITORY              TAG              IMAGE ID       CREATED         SIZE
 deepspeech              0.9.3            c2ec2476fedb   6 minutes ago   4.85GB
