@@ -62,27 +62,7 @@ Sat Jan  9 11:48:50 2021
 | Processes:                                                                  |
 |  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
 |        ID   ID                                                   Usage      |
-|=============================================================================|
-|    0   N/A  N/A      1098      G   /usr/lib/xorg/Xorg                 35MiB |
-|    0   N/A  N/A      2799      G   /usr/lib/xorg/Xorg                348MiB |
-|    0   N/A  N/A      2939      G   /usr/bin/gnome-shell              200MiB |
-|    0   N/A  N/A     25790      G   ...token=4412988484634553693       46MiB |
-|    0   N/A  N/A     88321      G   ...yreid/firefox/firefox-bin        1MiB |
-|    0   N/A  N/A     88585      G   ...yreid/firefox/firefox-bin        1MiB |
-|    0   N/A  N/A     88629      G   ...yreid/firefox/firefox-bin        1MiB |
-|    0   N/A  N/A     88633      G   ...yreid/firefox/firefox-bin        1MiB |
-|    0   N/A  N/A     88636      G   ...yreid/firefox/firefox-bin        1MiB |
-|    0   N/A  N/A     88644      G   ...yreid/firefox/firefox-bin        1MiB |
-|    0   N/A  N/A     88649      G   ...yreid/firefox/firefox-bin        1MiB |
-|    0   N/A  N/A     88653      G   ...yreid/firefox/firefox-bin        1MiB |
-|    0   N/A  N/A    589047      G   ...e/Steam/ubuntu12_32/steam       10MiB |
-|    0   N/A  N/A    589210      G   ./steamwebhelper                    1MiB |
-|    0   N/A  N/A    589231      G   ...e Steam Client --lang=en_       11MiB |
-|    0   N/A  N/A   2901345      G   /usr/lib/firefox/firefox            1MiB |
-|    0   N/A  N/A   2901358      G   /usr/lib/firefox/firefox            1MiB |
-|    0   N/A  N/A   2901366      G   /usr/lib/firefox/firefox            3MiB |
-|    0   N/A  N/A   3112017      G   .../debug.log --shared-files       46MiB |
-|    0   N/A  N/A   3275236      G   ...AAAAAAAA== --shared-files       28MiB |
+|=============================================================================| |                                                                             |
 +-----------------------------------------------------------------------------+
 
 ```
@@ -111,6 +91,8 @@ sudo apt install nvidia-utils-440-server  # version 440.95.01-0ubuntu0.20.04.1
 Once you've installed your drivers, use `nvidia-smi` to prove that they are installed correctly.
 
 _Note that you may need to restart your host after installing the GPU drivers._
+
+Ideally, you should not be running any other processes on your GPU(s) before you start training.
 
 Next, we will install the utility `nvtop` so that you can monitor the performance of your GPU(s). We will also use `nvtop` to prove that Docker is able to use your GPU(s) later in this document.
 
