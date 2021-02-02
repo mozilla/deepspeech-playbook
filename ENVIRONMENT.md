@@ -19,6 +19,7 @@
 This section of the Playbook assumes you are comfortable installing DeepSpeech and using it with a pre-trained model, and that you are comfortable setting up a Python _virtual environment_. Here, we provide information on setting up a Docker environment for training your own speech recognition model using DeepSpeech. We also cover dependencies Docker has for NVIDIA GPUs, so that you can use your GPU(s) for training a model.
 
 ---
+
 *** Do not train using only CPU(s) ***
 
 This Playbook assumes that you will be using NVIDIA GPU(s). Training a DeepSpeech speech recognition model on CPU(s) only will take a _very, very, very_ long time. Do not train on your CPU(s).
@@ -30,7 +31,11 @@ This Playbook assumes that you will be using NVIDIA GPU(s). Training a DeepSpeec
 Before we install Docker, we are going to make sure that we have all the Ubuntu Linux dependencies required for working with NVIDIA GPUs and Docker.
 
 ---
-@todo what if someone has a non-NVIDIA GPU? Personally I think they're so rare that we should just assume NVIDIA GPUs.
+
+*** Non-NVIDIA GPUS ***
+
+Although non-NVIDIA GPUs exist, they are currently rare, and we do not aim to support them in this Playbook.
+
 ---
 
 ### GPU drivers
