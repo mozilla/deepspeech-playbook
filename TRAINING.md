@@ -207,6 +207,56 @@ python3 DeepSpeech.py \
   --export_dir persistent-data/exported-model
 ```
 
+### `Failed to get convolution algorithm. This is probably because cuDNN failed to initialize, so try looking to see if a warning log message was printed above.` error when training
+
+_You can safely skip this section if you have not encountered this error_
+
+There hav ebeen several reports of an error similar to the below when training is initiated. Anecdotal evidence suggests that the error is more likely to be encountered if you are training using an RTX-model GPU.
+
+The error will look like this:
+
+```
+Epoch 0 |   Training | Elapsed Time: 0:00:00 | Steps: 0 | Loss: 0.000000Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow_core/python/client/session.py", line 1365, in _do_call
+    return fn(*args)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow_core/python/client/session.py", line 1350, in _run_fn
+    target_list, run_metadata)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow_core/python/client/session.py", line 1443, in _call_tf_sessionrun
+    run_metadata)
+tensorflow.python.framework.errors_impl.UnknownError: 2 root error(s) found.
+  (0) Unknown: Failed to get convolution algorithm. This is probably because cuDNN failed to initialize, so try looking to see if a warning log message was printed above.
+	 [[{{node tower_0/conv1d}}]]
+	 [[concat/concat/_99]]
+  (1) Unknown: Failed to get convolution algorithm. This is probably because cuDNN failed to initialize, so try looking to see if a warning log message was printed above.
+	 [[{{node tower_0/conv1d}}]]
+0 successful operations.
+0 derived errors ignored.
+```
+
+To work around this error, you will need to set the `TF_FORCE_GPU_ALLOW_GROWTH` flag to `True`.
+
+This is done in the file
+
+`DeepSpeech/training/deepspeech_training/util/config.py`
+
+and you should edit it as below:
+
+```
+root@687a2e3516d7:/DeepSpeech/training/deepspeech_training/util# nano config.py
+
+...
+
+    # Standard session configuration that'll be used for all new sessions.
+    c.session_config = tfv1.ConfigProto(allow_soft_placement=True, log_device$
+                                        inter_op_parallelism_threads=FLAGS.in$
+                                        intra_op_parallelism_threads=FLAGS.in$
+
+                                        gpu_options=tfv1.GPUOptions(allow_gro$
+
+    # Set TF_FORCE_GPU_ALLOW_GROWTH to work around cuDNN error on RTX GPUs
+    c.session_config.gpu_options.allow_growth=True
+```
+
 ### Monitoring GPU use with `nvtop`
 
 In a separate terminal (ie not from the session where you have the Docker container open), run the command `nvtop`. You should see the `DeepSpeech.py` process consuming all available GPUs.
