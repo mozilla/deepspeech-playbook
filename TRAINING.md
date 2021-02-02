@@ -14,6 +14,7 @@
   * [Running training](#running-training)
     + [Specifying checkpoint directories so that you can restart training from a checkpoint](#specifying-checkpoint-directories-so-that-you-can-restart-training-from-a-checkpoint)
     + [Specifying the directory that the trained model should be exported to](#specifying-the-directory-that-the-trained-model-should-be-exported-to)
+    + [`Failed to get convolution algorithm. This is probably because cuDNN failed to initialize, so try looking to see if a warning log message was printed above.` error when training](#-failed-to-get-convolution-algorithm-this-is-probably-because-cudnn-failed-to-initialize--so-try-looking-to-see-if-a-warning-log-message-was-printed-above--error-when-training)
     + [Monitoring GPU use with `nvtop`](#monitoring-gpu-use-with--nvtop-)
 
 Now that you have your Docker image build, you can run the image as a container to train a model.
@@ -23,7 +24,7 @@ _You will need the `id` of the Docker image that you created when you  [set up y
 _In this example, the `id` of the Docker image is `c2ec2476fedb`. Substitute it with your own._
 
 ```
-(deepspeech-training-venv) $ sudo docker run  -it --entrypoint /bin/bash c2ec2476fedb
+(deepspeech-training-venv) $ docker run  -it --entrypoint /bin/bash c2ec2476fedb
 ```
 
 The above command runs the Docker image as a _container_. The `entrypoint` instruction following `docker run` tells Docker to run the `/bin/bash` (ie shell) after creating the container.
@@ -72,15 +73,15 @@ To do that, we [attach a volume to the Docker container](https://docs.docker.com
 First, let's stop and remove our previously-running Docker container. We first find the `id` of our running container, then we stop it and remove it.
 
 ```
-$ sudo docker ps  
+$ docker ps  
 
 CONTAINER ID   IMAGE          COMMAND       CREATED          STATUS          PORTS     NAMES
 3ab7c98a9e5b   c2ec2476fedb   "/bin/bash"   36 minutes ago   Up 36 minutes             dreamy_dhawan
 
-$ sudo docker stop 3ab7c98a9e5b
+$ docker stop 3ab7c98a9e5b
 3ab7c98a9e5b
 
-$ sudo docker rm 3ab7c98a9e5b
+$ docker rm 3ab7c98a9e5b
 3ab7c98a9e5b
 
 ```
@@ -96,14 +97,14 @@ $ sudo docker rm 3ab7c98a9e5b
 We create a Docker volume using the following command:
 
 ```
-$ sudo docker volume create deepspeech-data
+$ docker volume create deepspeech-data
 deepspeech-data
 ```
 
 By default, the volume is created on the host filesystem at:
 
 ```
-$ sudo ls -las /var/lib/docker/volumes
+$ ls -las /var/lib/docker/volumes
 total 40
  4 drwx------  4 root root   4096 Jan  4 11:33 .
  4 drwx--x--x 13 root root   4096 Jan  4 08:35 ..
@@ -119,7 +120,7 @@ We now have a place to persistently store both the data for our model and the tr
 Now, we create a Docker container and attach the persistent volume, using this command. Note that the reference to your particular Docker image - here shown as `c2ec2476fedb` will be different.  
 
 ```
-$ sudo docker run  -it \
+$ docker run  -it \
   --entrypoint /bin/bash \
   --gpus all \
   --mount type=volume,source=deepspeech-data,target=/DeepSpeech/persistent-data c2ec2476fedb
@@ -211,7 +212,7 @@ python3 DeepSpeech.py \
 
 _You can safely skip this section if you have not encountered this error_
 
-There hav ebeen several reports of an error similar to the below when training is initiated. Anecdotal evidence suggests that the error is more likely to be encountered if you are training using an RTX-model GPU.
+There have been several reports of an error similar to the below when training is initiated. Anecdotal evidence suggests that the error is more likely to be encountered if you are training using an RTX-model GPU.
 
 The error will look like this:
 
