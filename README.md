@@ -22,9 +22,13 @@ Once you know what you can achieve with the DeepSpeech Playbook, this section pr
 
 Before you can train a model, you will need to collect and format your _corpus_ of data. This section provides an overview of the data format required for DeepSpeech, and walks through an example in prepping a dataset from Common Voice.
 
-## [The alphabet.txt file](ALPHABET.txt)
+## [The alphabet.txt file](ALPHABET.md)
 
 If you are training a model that uses a different alphabet to English, for example a language with diacritical marks, then you will need to modify the `alphabet.txt` file.
+
+## [Building your own scorer](SCORER.md)
+
+Learn what the scorer does, and how you can go about building your own. 
 
 ## [Acoustic model and language model](AM_vs_LM.md)
 

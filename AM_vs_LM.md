@@ -1,4 +1,4 @@
-[Home](README.md) | [Previous - The alphabet.txt file](ALPHABET.md) | [Next - Setting up your DeepSpeech training environment](ENVIRONMENT.md)
+[Home](README.md) | [Previous - Scorer - language model for determining which words occur together](SCORER.md) | [Next - Setting up your DeepSpeech training environment](ENVIRONMENT.md)
 
 # Acoustic model vs. Language model
 
@@ -18,4 +18,4 @@ The language model is a n-gram model trained with kenlm, and the training data i
 
 ---
 
-[Home](README.md) | [Previous - The alphabet.txt file](ALPHABET.md) | [Next - Setting up your DeepSpeech training environment](ENVIRONMENT.md)
+[Home](README.md) | [Previous - Scorer - language model for determining which words occur together](SCORER.md) | [Next - Setting up your DeepSpeech training environment](ENVIRONMENT.md)
