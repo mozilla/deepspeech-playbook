@@ -8,7 +8,8 @@
   * [Contents](#contents)
   * [Preparing your data for training](#preparing-your-data-for-training)
     + [Data from Common Voice](#data-from-common-voice)
-
+  * [Importers](#importers)
+  
 DeepSpeech expects audio files to be WAV format, mono-channel, and with a 16kHz sampling rate.
 
 For training, testing, and development, you need to feed DeepSpeech.py CSV files which contain three columns: `wav_filename,wav_filesize,transcript`. The `wav_filesize` (i.e. number of bytes) is used to group together audio of similar lengths for efficient batching.
@@ -87,7 +88,7 @@ They are located in the `bin` directory of the DeepSpeech repo:
 12 -rwxrwxr-x  1 kathyreid kathyreid  8578 Feb  1 23:58 import_voxforge.py
 ```
 
-The importer scripts ensure that the `.wav` files and corresponding transcriptions are in the `.csv` format expected by DeepSpeech. 
+The importer scripts ensure that the `.wav` files and corresponding transcriptions are in the `.csv` format expected by DeepSpeech.
 
 ---
 
