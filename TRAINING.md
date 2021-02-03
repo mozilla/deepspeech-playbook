@@ -1,4 +1,4 @@
-[Home](README.md) | [Previous - Setting up your DeepSpeech training environment](ENVIRONMENT.md) | [Next - Testing your model](TESTING.md)
+[Home](README.md) | [Previous - Setting up your DeepSpeech training environment](ENVIRONMENT.md) | [Next - Testing and evaluating your trained model](TESTING.md)
 
 # Training a DeepSpeech model
 
@@ -274,4 +274,4 @@ If you _do not_ see the GPU(s) being heavily utilised, you may be training only 
 
 ---
 
-[Home](README.md) | [Previous - Setting up your DeepSpeech training environment](ENVIRONMENT.md) | [Next - Testing your model](TESTING.md)
+[Home](README.md) | [Previous - Setting up your DeepSpeech training environment](ENVIRONMENT.md) | [Next - Testing and evaluating your trained model](TESTING.md)

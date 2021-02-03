@@ -1,4 +1,4 @@
-[Home](README.md) | [Previous - Testing your model](TESTING.md) | [Next - Real life examples of using DeepSpeech](EXAMPLES.md)
+[Home](README.md) | [Previous - Testing and evaluating your trained model](TESTING.md) | [Next - Real life examples of using DeepSpeech](EXAMPLES.md)
 
 # Deployment
 
@@ -13,4 +13,4 @@
 
 ---
 
-[Home](README.md) | [Previous - Testing your model](TESTING.md) | [Next - Real life examples of using DeepSpeech](EXAMPLES.md)
+[Home](README.md) | [Previous - Testing and evaluating your trained model](TESTING.md) | [Next - Real life examples of using DeepSpeech](EXAMPLES.md)
