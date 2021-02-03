@@ -49,3 +49,18 @@ Once trained and tested, your model is deployed. This section provides an overvi
 ## [Applying DeepSpeech to real world problems](EXAMPLES.md)
 
 This section covers specific use cases where DeepSpeech can be applied to real world problems, such as transcription, keyword searching and voice controlled applications.
+
+---
+
+# How you can help provide feedback on the DeepSpeech PlayBook
+
+You can help to make the DeepSpeech PlayBook even better by providing [via a GitHub Issue](LINK TO COME WHEN REPO HOME IS SORTED)
+
+* Please _try these instructions_, particularly for building a Docker image and running a Docker container, on multiple distributions of Linux so that we can identify corner cases.
+
+* Please _contribute your tacit knowledge_ - such as:
+  - common errors encountered in data formatting, environment setup, training and validation
+  - techniques or approaches for improving the scorer, alphabet file or the accuracy of Word Error Rate (WER) and Character Error Rate (CER).
+  - case studies of the work you or your organisation have been doing, showing your approaches to data validation, training or evaluation.
+
+* Please identify errors in text - with many eyes, bugs are shallow :-) 
