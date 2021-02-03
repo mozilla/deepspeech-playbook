@@ -138,4 +138,13 @@ ACTION: Refer out to more examples
 
 WebThings addon - except WebThings has now been spun out into their own entity.
 
-local language model - it's a useful case study of a real world example of DeepSpeech. 
+local language model - it's a useful case study of a real world example of DeepSpeech. Focus on where to put the model file. App needs extra permissions for reading from the SD card. Can't put model inside the application. The key approach is to download to the application's dat adirectory. You need a file on the file system. File descriptor - a way of having a stream of bytes - not supported yet. Android platform is used in many contexts.
+
+See issue #3331 - not finished. Brazilian company. Reuben in touch - see Reuben.
+
+## Transcription
+
+Flaki - was previously a Moz employee. Wants to use DS for live transcription at the MozFest conference. Getting good outcomes, worth touching base with. Compare output wiht a specific scorer. His specific intention is to work with acronyms - REST FEST etc. Computer specific. ASCII, provide proper abbreviations. Useful to discuss wiht him.
+
+
+NEXT ACTION: When I have a draft, ping Alexandre Lissy on matrix / send reviews via GitHub.
