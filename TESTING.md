@@ -13,7 +13,7 @@
 
 Let's say that you've already trained an acoustic model and a language model (a [scorer](SCORER.md)). Congratulations! But before you [deploy](DEPLOYMENT.md) your setup, you will need to evaluate how well it will work in practice - on your intended use case.
 
-We're talking here about a _setup_ rather than a trained _model_ on purpose - as there are multiple factors that influence how well a _setup_ performs in real life. There are multiple factors that influence the success of an application, and you need to keep all these factors in mind. The acoustic model and language model work with each other to turn speech into text, and there are lots of ways (i.e. decoding hyperparamer settings) with which you can combine those two models.
+We're talking here about a _setup_ rather than a trained _model_ on purpose - as there are multiple factors that influence how well a _setup_ performs in real life. There are multiple factors that influence the success of an application, and you need to keep all these factors in mind. The acoustic model and language model work with each other to turn speech into text, and there are lots of ways (i.e. decoding hyperparameter settings) with which you can combine those two models.
 
 ## Word Error Rate, Character Error Rate, loss and model performance
 
