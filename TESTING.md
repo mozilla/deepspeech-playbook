@@ -4,8 +4,12 @@
 
 ## Contents
 
-- [Testing your setup](#testing-your-setup)
+- [Testing and evaluating your trained model](#testing-and-evaluating-your-trained-model)
   * [Contents](#contents)
+  * [Word Error Rate, Character Error Rate, loss and model performance](#word-error-rate--character-error-rate--loss-and-model-performance)
+  * [Acoustic model and language model working together](#acoustic-model-and-language-model-working-together)
+  * [Heuristics](#heuristics)
+  * [Fine tuning and transfer learning](#fine-tuning-and-transfer-learning)
 
 Let's say that you've already trained an acoustic model and a language model (a [scorer](SCORER.md)). Congratulations! But before you [deploy](DEPLOYMENT.md) your setup, you will need to evaluate how well it will work in practice - on your intended use case.
 
