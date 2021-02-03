@@ -8,7 +8,8 @@
   * [Contents](#contents)
   * [Preparing your data for training](#preparing-your-data-for-training)
     + [Data from Common Voice](#data-from-common-voice)
-
+  * [Importers](#importers)
+  
 DeepSpeech expects audio files to be WAV format, mono-channel, and with a 16kHz sampling rate.
 
 For training, testing, and development, you need to feed DeepSpeech.py CSV files which contain three columns: `wav_filename,wav_filesize,transcript`. The `wav_filesize` (i.e. number of bytes) is used to group together audio of similar lengths for efficient batching.
@@ -50,9 +51,44 @@ root@3de3afbe5d6f:/DeepSpeech# bin/import_cv2.py persistent_data/cv-corpus-6.1-2
 
 This will process all the CV data into the `clips` directory, and it can now be used [for training](TRAINING.md).
 
----
+## Importers
 
-@todo are there any common errors in data formatting that we should cover at this point?
+DeepSpeech ships with several scripts which act as _importers_ - preparing a corpus of data for training by DeepSpeech.
+
+If you want to create importers for a new language, or a new corpus, you will need to fork the DeepSpeech repository, then add support for the new language and/or corpus by creating an _importer_ for that language/corpus.
+
+The existing importer scripts are a good starting point for creating your own importers.
+
+They are located in the `bin` directory of the DeepSpeech repo:
+
+```
+~/DeepSpeech/bin$ ls -las | grep import
+ 4 -rwxrwxr-x  1 kathyreid kathyreid  3583 Feb  1 23:58 import_aidatatang.py
+ 4 -rwxrwxr-x  1 kathyreid kathyreid  3448 Feb  1 23:58 import_aishell.py
+24 -rwxrwxr-x  1 kathyreid kathyreid 23640 Feb  1 23:58 import_ccpmf.py
+ 8 -rwxrwxr-x  1 kathyreid kathyreid  8038 Feb  1 23:58 import_cv2.py
+ 8 -rwxrwxr-x  1 kathyreid kathyreid  5717 Feb  1 23:58 import_cv.py
+12 -rwxrwxr-x  1 kathyreid kathyreid  9207 Feb  1 23:58 import_fisher.py
+ 4 -rwxrwxr-x  1 kathyreid kathyreid  3201 Feb  1 23:58 import_freestmandarin.py
+16 -rwxrwxr-x  1 kathyreid kathyreid 12829 Feb  1 23:58 import_gram_vaani.py
+ 4 -rwxrwxr-x  1 kathyreid kathyreid  1021 Feb  1 23:58 import_ldc93s1.py
+12 -rwxrwxr-x  1 kathyreid kathyreid  8602 Feb  1 23:58 import_librivox.py
+12 -rwxrwxr-x  1 kathyreid kathyreid  9311 Feb  1 23:58 import_lingua_libre.py
+ 8 -rwxrwxr-x  1 kathyreid kathyreid  4447 Feb  1 23:58 import_magicdata.py
+12 -rwxrwxr-x  1 kathyreid kathyreid  8225 Feb  1 23:58 import_m-ailabs.py
+ 4 -rwxrwxr-x  1 kathyreid kathyreid  3583 Feb  1 23:58 import_primewords.py
+12 -rwxrwxr-x  1 kathyreid kathyreid  8248 Feb  1 23:58 import_slr57.py
+12 -rwxrwxr-x  1 kathyreid kathyreid 11306 Feb  1 23:58 import_swb.py
+20 -rwxrwxr-x  1 kathyreid kathyreid 20217 Feb  1 23:58 import_swc.py
+ 8 -rwxrwxr-x  1 kathyreid kathyreid  5538 Feb  1 23:58 import_ted.py
+ 8 -rwxrwxr-x  1 kathyreid kathyreid  5550 Feb  1 23:58 import_timit.py
+ 8 -rwxrwxr-x  1 kathyreid kathyreid  7777 Feb  1 23:58 import_ts.py
+ 8 -rwxrwxr-x  1 kathyreid kathyreid  6708 Feb  1 23:58 import_tuda.py
+ 8 -rwxrwxr-x  1 kathyreid kathyreid  6460 Feb  1 23:58 import_vctk.py
+12 -rwxrwxr-x  1 kathyreid kathyreid  8578 Feb  1 23:58 import_voxforge.py
+```
+
+The importer scripts ensure that the `.wav` files and corresponding transcriptions are in the `.csv` format expected by DeepSpeech.
 
 ---
 
