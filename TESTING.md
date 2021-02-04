@@ -1,4 +1,4 @@
-[Home](README.md) | [Previous - Training your model](TRAINING.md) | [Next - Deploying your model](DEPLOYING.md)
+[Home](README.md) | [Previous - Training your model](TRAINING.md) | [Next - Deploying your model](DEPLOYMENT.md)
 
 # Testing and evaluating your trained model
 
@@ -53,4 +53,4 @@ For more information on [transfer learning in DeepSpeech, please consult the doc
 
 ---
 
-[Home](README.md) | [Previous - Training your model](TRAINING.md) | [Next - Deploying your model](DEPLOYING.md)
+[Home](README.md) | [Previous - Training your model](TRAINING.md) | [Next - Deploying your model](DEPLOYMENT.md)
