@@ -50,18 +50,9 @@ First, [download the dataset from Common Voice](https://commonvoice.mozilla.org/
 Start your DeepSpeech Docker container with the `deepspeech-data` volume attached. Your CV corpus data should be available from within the Docker container.
 
  ```
- root@3de3afbe5d6f:/DeepSpeech# ls -las persistent-data/cv-corpus-6.1-2020-12-11/id/
- total 5500
-    4 drwxrwxr-x 3 1000 1000    4096 Dec 13 01:43 .
-    4 drwxrwxr-x 3 1000 1000    4096 Jan  3 22:25 ..
-  820 drwxrwxr-x 2 1000 1000  835584 Dec 11 19:42 clips
-  396 -rw-r--r-- 1 1000 1000  401601 Dec 18 00:20 dev.tsv
-  104 -rw-r--r-- 1 1000 1000  103332 Dec 18 00:20 invalidated.tsv
- 1448 -rw-r--r-- 1 1000 1000 1481571 Dec 18 00:20 other.tsv
-   28 -rw-rw-r-- 1 1000 1000   26394 Dec 18 20:32 reported.tsv
-  392 -rw-r--r-- 1 1000 1000  399790 Dec 18 00:20 test.tsv
-  456 -rw-r--r-- 1 1000 1000  465258 Dec 18 00:20 train.tsv
- 1848 -rw-r--r-- 1 1000 1000 1889606 Dec 18 00:20 validated.tsv
+ root@3de3afbe5d6f:/DeepSpeech# ls  persistent-data/cv-corpus-6.1-2020-12-11/id/
+ clips    invalidated.tsv  reported.tsv  train.tsv
+ dev.tsv  other.tsv        test.tsv      validated.tsv
 ```
 
 Next, we will run the Common Voice importer that ships with DeepSpeech.
@@ -83,30 +74,30 @@ The existing importer scripts are a good starting point for creating your own im
 They are located in the `bin` directory of the DeepSpeech repo:
 
 ```
-~/DeepSpeech/bin$ ls -las | grep import
- 4 -rwxrwxr-x  1 kathyreid kathyreid  3583 Feb  1 23:58 import_aidatatang.py
- 4 -rwxrwxr-x  1 kathyreid kathyreid  3448 Feb  1 23:58 import_aishell.py
-24 -rwxrwxr-x  1 kathyreid kathyreid 23640 Feb  1 23:58 import_ccpmf.py
- 8 -rwxrwxr-x  1 kathyreid kathyreid  8038 Feb  1 23:58 import_cv2.py
- 8 -rwxrwxr-x  1 kathyreid kathyreid  5717 Feb  1 23:58 import_cv.py
-12 -rwxrwxr-x  1 kathyreid kathyreid  9207 Feb  1 23:58 import_fisher.py
- 4 -rwxrwxr-x  1 kathyreid kathyreid  3201 Feb  1 23:58 import_freestmandarin.py
-16 -rwxrwxr-x  1 kathyreid kathyreid 12829 Feb  1 23:58 import_gram_vaani.py
- 4 -rwxrwxr-x  1 kathyreid kathyreid  1021 Feb  1 23:58 import_ldc93s1.py
-12 -rwxrwxr-x  1 kathyreid kathyreid  8602 Feb  1 23:58 import_librivox.py
-12 -rwxrwxr-x  1 kathyreid kathyreid  9311 Feb  1 23:58 import_lingua_libre.py
- 8 -rwxrwxr-x  1 kathyreid kathyreid  4447 Feb  1 23:58 import_magicdata.py
-12 -rwxrwxr-x  1 kathyreid kathyreid  8225 Feb  1 23:58 import_m-ailabs.py
- 4 -rwxrwxr-x  1 kathyreid kathyreid  3583 Feb  1 23:58 import_primewords.py
-12 -rwxrwxr-x  1 kathyreid kathyreid  8248 Feb  1 23:58 import_slr57.py
-12 -rwxrwxr-x  1 kathyreid kathyreid 11306 Feb  1 23:58 import_swb.py
-20 -rwxrwxr-x  1 kathyreid kathyreid 20217 Feb  1 23:58 import_swc.py
- 8 -rwxrwxr-x  1 kathyreid kathyreid  5538 Feb  1 23:58 import_ted.py
- 8 -rwxrwxr-x  1 kathyreid kathyreid  5550 Feb  1 23:58 import_timit.py
- 8 -rwxrwxr-x  1 kathyreid kathyreid  7777 Feb  1 23:58 import_ts.py
- 8 -rwxrwxr-x  1 kathyreid kathyreid  6708 Feb  1 23:58 import_tuda.py
- 8 -rwxrwxr-x  1 kathyreid kathyreid  6460 Feb  1 23:58 import_vctk.py
-12 -rwxrwxr-x  1 kathyreid kathyreid  8578 Feb  1 23:58 import_voxforge.py
+root@3de3afbe5d6f:/DeepSpeech# ls | grep import
+import_aidatatang.py
+import_aishell.py
+import_ccpmf.py
+import_cv.py
+import_cv2.py
+import_fisher.py
+import_freestmandarin.py
+import_gram_vaani.py
+import_ldc93s1.py
+import_librivox.py
+import_lingua_libre.py
+import_m-ailabs.py
+import_magicdata.py
+import_primewords.py
+import_slr57.py
+import_swb.py
+import_swc.py
+import_ted.py
+import_timit.py
+import_ts.py
+import_tuda.py
+import_vctk.py
+import_voxforge.py
 ```
 
 The importer scripts ensure that the `.wav` files and corresponding transcriptions are in the `.csv` format expected by DeepSpeech.

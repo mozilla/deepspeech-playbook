@@ -104,13 +104,8 @@ deepspeech-data
 By default, the volume is created on the host filesystem at:
 
 ```
-$ ls -las /var/lib/docker/volumes
-total 40
- 4 drwx------  4 root root   4096 Jan  4 11:33 .
- 4 drwx--x--x 13 root root   4096 Jan  4 08:35 ..
- 0 brw-------  1 root root 259, 2 Jan  4 08:35 backingFsBlockDev
- 4 drwxr-xr-x  3 root root   4096 Jan  4 11:33 deepspeech-data
-24 -rw-------  1 root root  32768 Jan  4 11:33 metadata.db
+$ sudo ls /var/lib/docker/volumes
+backingFsBlockDev  deepspeech-data  metadata.db
 ```
 
 We now have a place to persistently store both the data for our model and the trained model itself. Move your training data into this location, ensuring that you move it into the `_data` directory within the `deepspeech-directory` for it to be accessible from inside the Docker container.
@@ -144,12 +139,8 @@ To avoid this, run the container by specifying your user's userid:
 
 $ docker run -u $(id -u):$(id -g) args...
 
-root@3de3afbe5d6f:/DeepSpeech# ls -las persistent-data/
-total 12
-4 drwxr-xr-x 3 root root 4096 Jan  4 01:45 .
-4 drwxr-xr-x 1 root root 4096 Jan  4 01:34 ..
-4 drwxrwxr-x 3 1000 1000 4096 Jan  3 22:25 cv-corpus-6.1-2020-12-11
-
+root@3de3afbe5d6f:/DeepSpeech# ls persistent-data/
+checkpoints              cv-corpus-6.1-2020-12-11   exported-model
 ```
 
 Assuming that you have [prepared your training data](DATA_FORMATTING.md), you are now ready to train a model from within the DeepSpeech Docker container.
@@ -268,7 +259,7 @@ If you _do not_ see the GPU(s) being heavily utilised, you may be training only 
 
 Advanced training options are available, such as _feature cache_ and _augmentation_. They are beyond the scope of this PlayBook, but you can [read more about them in the DeepSpeech documentation](https://deepspeech.readthedocs.io/en/v0.9.3/TRAINING.html#augmentation).
 
-For a full list of parameters that can be passed to the `DeepSpeech.py` file, [please consult the DeepSpeech documentation](https://deepspeech.readthedocs.io/en/v0.9.3/Flags.html#training-flags). 
+For a full list of parameters that can be passed to the `DeepSpeech.py` file, [please consult the DeepSpeech documentation](https://deepspeech.readthedocs.io/en/v0.9.3/Flags.html#training-flags).
 
 ---
 
