@@ -29,6 +29,12 @@ This PlayBook is focused on _training_ a speech recognition model, rather than o
 
 * Ensure that the phrasing on which your voice clips are generated covers the phrases you expect to encounter in your runtime audio.
 
+### Punctuation and numbers
+
+If you are collecting data that will be used to train a speech model, then you should remove punctuation marks such as dashes, tick marks, quote marks and so on. These will often be confused, and can hinder training an accurate model.
+
+Numbers should be written in full (ie as a [cardinal](https://en.wikipedia.org/wiki/Cardinal_numeral)) - that is, as `eight` rather than `8`.
+
 ## Preparing your data for training
 
 ### Data from Common Voice
