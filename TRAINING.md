@@ -264,13 +264,9 @@ In a separate terminal (ie not from the session where you have the Docker contai
 
 If you _do not_ see the GPU(s) being heavily utilised, you may be training only on your CPUs and you should double check your [environment](ENVIRONMENT.md).
 
----
+### Advanced training options
 
-@todo want to chat with Josh what else should be in this training file such as
-
-  - fine tuning a model or doing transfer learning
-  - setting the number of epochs and _how_ to set the number of epochs
-  - should the `feature_cache` be set to be on the persistent storage?
+Advanced training options are available, such as _feature cache_ and _augmentation_. They are beyond the scope of this PlayBook, but you can [read more about them in the DeepSpeech documentation](https://deepspeech.readthedocs.io/en/v0.9.3/TRAINING.html#augmentation). 
 
 ---
 
