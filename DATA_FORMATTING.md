@@ -6,6 +6,7 @@
 
 - [Formatting your training data for DeepSpeech](#formatting-your-training-data-for-deepspeech)
   * [Contents](#contents)
+  * [Collecting data](#collecting-data)
   * [Preparing your data for training](#preparing-your-data-for-training)
     + [Data from Common Voice](#data-from-common-voice)
   * [Importers](#importers)
@@ -26,7 +27,7 @@ This PlayBook is focused on _training_ a speech recognition model, rather than o
 
 * Ensure that your voice clips are created using similar microphones to that which you expect in your runtime audio. For example, if you expect to deploy your model on Android mobile phones, ensure that your training data is generated from Android mobile phones.
 
-* Ensure that the phrasing on which your voice clips are generated covers the phrases you expect to encounter in your runtime audio. 
+* Ensure that the phrasing on which your voice clips are generated covers the phrases you expect to encounter in your runtime audio.
 
 ## Preparing your data for training
 
