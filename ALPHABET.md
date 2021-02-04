@@ -23,14 +23,9 @@ Quite simply, `alphabet.txt` helps DeepSpeech make a lookup table, and at run-ti
 
 ### How to diagnose mis-matched alphabets?
 
-If you think you used different alphabets to create a language model and an acoustic model, try decoding without the scorer. If you can decode the audio without a scorer and the output is reasonable, but when you decode the same audio with a scorer, and the output is not reasonable, then you could have mis-matched alphabets. Usually the easiest way to fix this is to re-compile the scorer with the correct alphabet.
+If you think you used different alphabets to create a [language model and an acoustic model](AM_vs_LM.md), try decoding _without_ the scorer. If you can decode the audio without a scorer and the output is reasonable, but when you decode the same audio with a scorer, and the output is _not_ reasonable, then you could have mis-matched alphabets. Usually the easiest way to fix this is to re-compile the scorer with the correct alphabet.
 
----
-
-@todo I probably need to give an example of how to do this but I'm not sure where to start
-
----
-
+[Read more information on building a language model (scorer)](SCORER.md).
 
 ## Common alphabet.txt related errors
 
