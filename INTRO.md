@@ -9,6 +9,7 @@
   * [Is this guide for you?](#is-this-guide-for-you-)
   * [Setting expectations](#setting-expectations)
   * [Setting up for success](#setting-up-for-success)
+  * [Checklist for success](#checklist-for-success)
 
 ## Is this guide for you?
 
@@ -34,17 +35,19 @@ The success of any voice technology depends on a constellation of factors, and t
 
 We will talk about ways in which you can constrain the search space of a problem and bias a model towards a set of words that you actually care about. If you want to make a useful digit recognizer, it doesn't matter if your model has an 85% Word Error Rate (WER) when transcribing the nightly news. All that matters is your model can correctly identify spoken digits. It is key to align what you care about with what you are measuring.
 
----
-
-@todo I don't have an example here of how to constrain the search space and bias a model towards a particular set of words - is that where the language model comes in? Should we have a page called `LANGUAGE_MODEL.md` or similar?
-
----
-
 If you have ever used a speech technology and it worked flawlessly, the creators of the product set themselves up for success. This is what you must also do in your application.
 
----
+## Checklist for success
 
-@todo I feel like what this section needs is a _checklist_ or similar on all the things that somebody has to do to set themselves up for success. Is this something that you think I should build out?
+To help set you up for success, we've included a checklist below.
+
+- [ ] Have a clear understanding of the intended _use case_. What phrases will be used in the use case that you want to recognise?
+- [ ] Ensure as many audio samples as possible, and ensure that they cover all the phrases expected in the use case. Remember, you will need hundreds of hours of audio data for large vocabulary speech recognition.
+- [ ] The language model (scorer) needs to include every word that will be expected to be spoken in your intended use case.
+- [ ] The language model (scorer) should _exclude_ any words that are _not_ expected to be spoken in your intended use case, to constrain the model.
+- [ ] If your intended use case will have background noise, then your voice data should have background noise.
+- [ ] If your intended use case will need to recognise particular accents, then your voice data should contain those accents.
+- [ ] You will need access to a Linux host with an NVIDIA GPU, and you should be comfortable operating in a `bash` environment.
 
 ---
 
