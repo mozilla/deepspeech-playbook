@@ -34,8 +34,4 @@ The core of DeepSpeech is written in C++, but it has bindings to Python, .NET, J
 
 ---
 
-@todo should we be clear here that the bindings are for _inference_ only rather than training (that's an assumption I'm making).
-
----
-
 [Home](README.md) | [Previous - Introduction](INTRO.md) | [Next - Formatting your training data](DATA_FORMATTING.md)
