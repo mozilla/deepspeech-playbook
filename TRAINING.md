@@ -266,7 +266,9 @@ If you _do not_ see the GPU(s) being heavily utilised, you may be training only 
 
 ### Advanced training options
 
-Advanced training options are available, such as _feature cache_ and _augmentation_. They are beyond the scope of this PlayBook, but you can [read more about them in the DeepSpeech documentation](https://deepspeech.readthedocs.io/en/v0.9.3/TRAINING.html#augmentation). 
+Advanced training options are available, such as _feature cache_ and _augmentation_. They are beyond the scope of this PlayBook, but you can [read more about them in the DeepSpeech documentation](https://deepspeech.readthedocs.io/en/v0.9.3/TRAINING.html#augmentation).
+
+For a full list of parameters that can be passed to the `DeepSpeech.py` file, [please consult the DeepSpeech documentation](https://deepspeech.readthedocs.io/en/v0.9.3/Flags.html#training-flags). 
 
 ---
 
