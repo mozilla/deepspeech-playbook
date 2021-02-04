@@ -9,10 +9,24 @@
   * [Preparing your data for training](#preparing-your-data-for-training)
     + [Data from Common Voice](#data-from-common-voice)
   * [Importers](#importers)
-  
+
 DeepSpeech expects audio files to be WAV format, mono-channel, and with a 16kHz sampling rate.
 
 For training, testing, and development, you need to feed DeepSpeech.py CSV files which contain three columns: `wav_filename,wav_filesize,transcript`. The `wav_filesize` (i.e. number of bytes) is used to group together audio of similar lengths for efficient batching.
+
+## Collecting data
+
+This PlayBook is focused on _training_ a speech recognition model, rather than on _collecting_ the data that is required for an accurate model. However, a good model starts with data.
+
+* Ensure that your voice clips are 10-20 seconds in length. If they are longer or shorter than this, your model will be less accurate.
+
+* Ensure that every character in your transcription of a voice clip is in your [alphabet.txt](ALPHABET.md) file
+
+* Ensure that your voice clips exhibit the same sort of diversity you expect to encounter in your runtime audio. This means a diversity of accents, genders, background noise and so on.
+
+* Ensure that your voice clips are created using similar microphones to that which you expect in your runtime audio. For example, if you expect to deploy your model on Android mobile phones, ensure that your training data is generated from Android mobile phones.
+
+* Ensure that the phrasing on which your voice clips are generated covers the phrases you expect to encounter in your runtime audio. 
 
 ## Preparing your data for training
 
