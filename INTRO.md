@@ -12,12 +12,6 @@
 
 ## Is this guide for you?
 
----
-
-@todo One of the things that we wanted to do early on in the piece was provide an introduction around what is speech recognition - do we think we still need that somewhere here, or given the capbilities of the people who are likely to be using the Playbook, are they already familiar with ASR?
-
----
-
 You're probably here because you're interested in automatic speech recognition (ASR) - the process of converting phrases spoken by humans into written form. There have been significant advances in speech recognition in recent years, driven both by new deep learning algorithms, and by advances in hardware that are capable of the large volume of computations required by those algorithms. Several new tools are available to assist developers with both training speech recognition models and using those models for inference - DeepSpeech being one of them.
 
 If you're trying to get DeepSpeech working for your application, your data, or a new language, you've come to the right place! You can easily download a pre-trained DeepSpeech model for English, but it might not work for you out of the box. No worries, with a little tweaking you can get DeepSpeech working for most anything!
@@ -32,9 +26,13 @@ Nevertheless, with some tips and tricks, you can still make create useful voice 
 
 ## Setting up for success
 
+Speech recognition is a _statistical_ process. Speech recognition models are _trained_ on large amounts of voice data, using statistical techniques to "learn" associations between sounds, in the form of `.wav` files, and characters, that are found in an alphabet. Because speech recognition is statistical, it does not have "bugs" in the sense that computer code has bugs; instead, anomalies or biases in the data used for a speech recognition model mean that the resulting model will likely exhibit those biases.
+
+Speech recognition still requires trial and error - with the data that is used to train a model, the language model or scorer that is used to form words from characters, and with specific training settings. "Debugging" speech recognition models means findings ways to make the data, the alphabet and and scorer more _accurate_. That is, making them mirror as closely as possible the real-world conditions in which the speech recognition model will be used. If your speech recognition model will be used to help transcribe geographic place names, then your voice data and your scorer need to cover those place names.
+
 The success of any voice technology depends on a constellation of factors, and the accuracy of your speech recognizer is just one factor. To the extent that an existing voice technology works, it works because the creators have eliminated sources of failure. Think about one of the oldest working voice technologies: spoken digit recognition. When you call a bank you might hear a recording like this: "Say ONE to learn about credit cards, say TWO to learn about debit cards, or say ZERO to speak to a representative". These systems usually work well, but you might not know that if you answer with anything other than a single digit, the system will completely fail to understand you. Spoken digit recognition systems are setup for success because they've re-formulated an open-ended transcription problem as a simple classification problem. In this case, as long as the system is able to distinguish spoken digits from one another, it will succeed.
 
-We will talk about ways in which you can constrain the search space of a problem and bias a model towards a set of words that you actually care about. If you want to make a useful digit recognizer, it doesn't matter if your model has an 85% Word Error Rate when transcribing the nightly news. All that matters is your model can correctly identify spoken digits. It is key to align what you care about with what you are measuring.
+We will talk about ways in which you can constrain the search space of a problem and bias a model towards a set of words that you actually care about. If you want to make a useful digit recognizer, it doesn't matter if your model has an 85% Word Error Rate (WER) when transcribing the nightly news. All that matters is your model can correctly identify spoken digits. It is key to align what you care about with what you are measuring.
 
 ---
 
