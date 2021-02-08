@@ -52,6 +52,20 @@ This section covers specific use cases where DeepSpeech can be applied to real w
 
 ---
 
+# Introductory courses on machine learning
+
+Providing an introduction to machine learning is beyond the scope of this PlayBook, howevever having an understanding of machine learning and deep learning concepts will aid your efforts in training speech recognition models with DeepSpeech.
+
+Here, we've linked to several resources that you may find helpful; they're listed in the order we recommend reading them in.
+
+* [Digital Ocean's introductory machine learning tutorial](https://www.digitalocean.com/community/tutorials/an-introduction-to-machine-learning) provides an overview of different types of machine learning. The diagrams in this tutorial are a great way of explaining key concepts.
+
+* [Google's machine learning crash course](https://developers.google.com/machine-learning/crash-course/ml-intro) provides a gentle introduction to the main concepts of machine learning, including _gradient descent_, _learning rate_, _training, test and validation sets_ and _overfitting_.
+
+* If machine learning is something that sparks your interest, then you may enjoy [the MIT Open Learning Library's Introduction to Machine Learning course](https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/course/), a 13-week college-level course covering perceptrons, neural networks, support vector machines and convolutional neural networks. 
+
+---
+
 # How you can help provide feedback on the DeepSpeech PlayBook
 
 You can help to make the DeepSpeech PlayBook even better by providing [via a GitHub Issue](LINK TO COME WHEN REPO HOME IS SORTED)
@@ -63,4 +77,4 @@ You can help to make the DeepSpeech PlayBook even better by providing [via a Git
   - techniques or approaches for improving the scorer, alphabet file or the accuracy of Word Error Rate (WER) and Character Error Rate (CER).
   - case studies of the work you or your organisation have been doing, showing your approaches to data validation, training or evaluation.
 
-* Please identify errors in text - with many eyes, bugs are shallow :-) 
+* Please identify errors in text - with many eyes, bugs are shallow :-)
