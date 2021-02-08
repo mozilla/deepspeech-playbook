@@ -1,4 +1,4 @@
-[Home](README.md) | [Next - Formatting your training data](DATA_FORMATTING.md) | [Next - Acoustic Model and Language Model](AM_vs_LM.md)
+[Home](README.md) | [Previous - Scorer - language model for determining which words occur together ](SCORER.md) | [Next - Acoustic Model and Language Model](AM_vs_LM.md)
 
 # The alphabet.txt file
 
@@ -39,4 +39,4 @@ ValueError: Alphabet cannot encode transcript "panggil ambulan！" while process
 
 ---
 
-[Home](README.md) | [Next - Formatting your training data](DATA_FORMATTING.md) | [Next - Acoustic Model and Language Model](AM_vs_LM.md)
+[Home](README.md) | [Previous - Scorer - language model for determining which words occur together ](SCORER.md) | [Next - Acoustic Model and Language Model](AM_vs_LM.md)
