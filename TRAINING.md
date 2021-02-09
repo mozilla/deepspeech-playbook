@@ -49,7 +49,7 @@ The options `--train_files`, `--dev_files` and `--test_files` take a path to the
 
 As you are training your model, DeepSpeech will store _checkpoints_ to disk. The checkpoint allows interruption to training, and to restart training from the checkpoint, saving hours of training time.
 
-Because we have our [training environment](ENVIRONMENT.md) configured to use Docker, we must ensure that our checkpoint directories are stored on the Docker volume, so that they _persist_ in the event of failure.
+Because we have our [training environment](ENVIRONMENT.md) configured to use Docker, we must ensure that our checkpoint directories are stored in the directory used by the _bind mount_, so that they _persist_ in the event of failure.
 
 To specify checkpoint directories, use the `--checkpoint_dir` parameter with `DeepSpeech.py`:
 
@@ -65,7 +65,7 @@ python3 DeepSpeech.py \
 
 ### Specifying the directory that the trained model should be exported to
 
-Again, because we have our [training environment](ENVIRONMENT.md) configured to use Docker, we must ensure that our trained model is stored to the Docker volume, so that it persists in the event of failure of the Docker container.
+Again, because we have our [training environment](ENVIRONMENT.md) configured to use Docker, we must ensure that our trained model is stored in the directory used by the _bind mount_, so that it _persists_ in the event of failure of the Docker container.
 
 To specify where the trained model should be saved, use the `--export-dir` parameter with `DeepSpeech.py`:
 
