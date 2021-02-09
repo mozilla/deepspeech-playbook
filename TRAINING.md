@@ -6,158 +6,33 @@
 
 - [Training a DeepSpeech model](#training-a-deepspeech-model)
   * [Contents](#contents)
-    + [Train using one of the sample scripts to ensure your Docker environment is functioning correctly](#train-using-one-of-the-sample-scripts-to-ensure-your-docker-environment-is-functioning-correctly)
-  * [Creating a Docker container with an attached volume so that you can access training data](#creating-a-docker-container-with-an-attached-volume-so-that-you-can-access-training-data)
-    + [Create the Docker volume](#create-the-docker-volume)
-    + [Creating a Docker container and attaching the persistent volume](#creating-a-docker-container-and-attaching-the-persistent-volume)
-  * [Copying training files into the Docker container](#copying-training-files-into-the-docker-container)
+  * [Making training files available to the Docker container](#making-training-files-available-to-the-docker-container)
   * [Running training](#running-training)
     + [Specifying checkpoint directories so that you can restart training from a checkpoint](#specifying-checkpoint-directories-so-that-you-can-restart-training-from-a-checkpoint)
     + [Specifying the directory that the trained model should be exported to](#specifying-the-directory-that-the-trained-model-should-be-exported-to)
+  * [Possible errors](#possible-errors)
     + [`Failed to get convolution algorithm. This is probably because cuDNN failed to initialize, so try looking to see if a warning log message was printed above.` error when training](#-failed-to-get-convolution-algorithm-this-is-probably-because-cudnn-failed-to-initialize--so-try-looking-to-see-if-a-warning-log-message-was-printed-above--error-when-training)
-    + [Monitoring GPU use with `nvtop`](#monitoring-gpu-use-with--nvtop-)
+  * [Monitoring GPU use with `nvtop`](#monitoring-gpu-use-with--nvtop-)
+  * [Advanced training options](#advanced-training-options)
 
-Now that you have your Docker image build, you can run the image as a container to train a model.
+## Making training files available to the Docker container
 
-_You will need the `id` of the Docker image that you created when you  [set up your DeepSpeech training environment](ENVIRONMENT.md)._
-
-_In this example, the `id` of the Docker image is `c2ec2476fedb`. Substitute it with your own._
-
-```
-(deepspeech-training-venv) $ docker run  -it --entrypoint /bin/bash c2ec2476fedb
-```
-
-The above command runs the Docker image as a _container_. The `entrypoint` instruction following `docker run` tells Docker to run the `/bin/bash` (ie shell) after creating the container.
-
-This command assumes that `/bin/bash` will be invoked as the `root` user. This is necessary, as the Docker container needs to make changes to the filesystem. If you use the `-u $(id -u):$(id -g)` switches, you will tell Docker to invoke `/bin/bash` as the current user of the host that is running the Docker container. You will likely encounter `permission denied` errors while running training.
-
-When you run the above command, you should see the following prompt:
+Before we can train a model, we need to make the training data available to the Docker container. The training data was previously prepared in the [instructions for formatting data](DATA_FORMATTING.md). Copy or extract them to the directory you specified in your _bind mount_. This will make them available to the Docker container.
 
 ```
-________                               _______________                
-___  __/__________________________________  ____/__  /________      __
-__  /  _  _ \_  __ \_  ___/  __ \_  ___/_  /_   __  /_  __ \_ | /| / /
-_  /   /  __/  / / /(__  )/ /_/ /  /   _  __/   _  / / /_/ /_ |/ |/ /
-/_/    \___//_/ /_//____/ \____//_/    /_/      /_/  \____/____/|__/
-
-
-WARNING: You are running this container as root, which can cause new files in
-mounted volumes to be created as the root user on your host machine.
-
-To avoid this, run the container by specifying your user's userid:
-
-$ docker run -u $(id -u):$(id -g) args...
-
-root@98302841b69f:/DeepSpeech#
-
+$ cd deepspeech-data
+$ ls cv-corpus-6.1-2020-12-11/
+total 12
+4 drwxr-xr-x 3 kathyreid kathyreid 4096 Feb  9 10:42 ./
+4 drwxrwxr-x 7 kathyreid kathyreid 4096 Feb  9 10:43 ../
+4 drwxr-xr-x 3 kathyreid kathyreid 4096 Feb  9 10:43 id/
 ```
 
-From this point we can run DeepSpeech commands to do training from within the Docker container.
-
-### Train using one of the sample scripts to ensure your Docker environment is functioning correctly
-
-DeepSpeech includes a number of convenience scripts in the `bin` directory. They are named for the corpus they are configured for. To ensure that your Docker environment is functioning correctly, run one of these scripts.
-
-```
-root@98302841b69f:/DeepSpeech/bin# ./bin/run-ldc93s1.sh
-```
-
-This will train on a single audio file for 200 epochs.
-
-## Creating a Docker container with an attached volume so that you can access training data
-
-In the above example, we weren't undertaking any operations _outside_ the Docker container. In a real training scenario, you will want to store your training data and your trained model _outside_ of the Docker container, so that when the Docker container is destroyed, the data, and the trained model persist.
-
-To do that, we [attach a volume to the Docker container](https://docs.docker.com/storage/volumes/).
-
-First, let's stop and remove our previously-running Docker container. We first find the `id` of our running container, then we stop it and remove it.
-
-```
-$ docker ps  
-
-CONTAINER ID   IMAGE          COMMAND       CREATED          STATUS          PORTS     NAMES
-3ab7c98a9e5b   c2ec2476fedb   "/bin/bash"   36 minutes ago   Up 36 minutes             dreamy_dhawan
-
-$ docker stop 3ab7c98a9e5b
-3ab7c98a9e5b
-
-$ docker rm 3ab7c98a9e5b
-3ab7c98a9e5b
-
-```
-
----
-
-@todo not sure if this section sits better in the ENVIRONMENT.md file, I will get Josh's thoughts
-
----
-
-### Create the Docker volume
-
-We create a Docker volume using the following command:
-
-```
-$ docker volume create deepspeech-data
-deepspeech-data
-```
-
-By default, the volume is created on the host filesystem at:
-
-```
-$ sudo ls /var/lib/docker/volumes
-backingFsBlockDev  deepspeech-data  metadata.db
-```
-
-We now have a place to persistently store both the data for our model and the trained model itself. Move your training data into this location, ensuring that you move it into the `_data` directory within the `deepspeech-directory` for it to be accessible from inside the Docker container.
-
-### Creating a Docker container and attaching the persistent volume
-
-Now, we create a Docker container and attach the persistent volume, using this command. Note that the reference to your particular Docker image - here shown as `c2ec2476fedb` will be different.  
-
-```
-$ docker run  -it \
-  --entrypoint /bin/bash \
-  --gpus all \
-  --mount type=volume,source=deepspeech-data,target=/DeepSpeech/persistent-data c2ec2476fedb
-
-```
-
-This command creates the container, and mounts the `deepspeech-data` directory to the `/DeepSpeech/persistent-data` directory within the container, as seen below:
-
-```
-________                               _______________                
-___  __/__________________________________  ____/__  /________      __
-__  /  _  _ \_  __ \_  ___/  __ \_  ___/_  /_   __  /_  __ \_ | /| / /
-_  /   /  __/  / / /(__  )/ /_/ /  /   _  __/   _  / / /_/ /_ |/ |/ /
-/_/    \___//_/ /_//____/ \____//_/    /_/      /_/  \____/____/|__/
-
-
-WARNING: You are running this container as root, which can cause new files in
-mounted volumes to be created as the root user on your host machine.
-
-To avoid this, run the container by specifying your user's userid:
-
-$ docker run -u $(id -u):$(id -g) args...
-
-root@3de3afbe5d6f:/DeepSpeech# ls persistent-data/
-checkpoints              cv-corpus-6.1-2020-12-11   exported-model
-```
-
-Assuming that you have [prepared your training data](DATA_FORMATTING.md), you are now ready to train a model from within the DeepSpeech Docker container.
-
-## Copying training files into the Docker container
-
-Before we can train a model, we need to copy the files needed for training into the Docker container. These were previously prepared in the [instructions for formatting data](DATA_FORMATTING.md).
-
-Copy or extract them to:
-
-```
-/var/lib/docker/volumes/deepspeech-data/_data
-```
+We're now ready to being training.
 
 ## Running training
 
-To begin training, run the command:
+We're going to walk through some of the key parameters you can use with `DeepSpeech.py`.
 
 ```
 python3 DeepSpeech.py \
@@ -165,6 +40,8 @@ python3 DeepSpeech.py \
   --dev_files persistent-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
   --test_files persistent-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv
 ```
+
+**Do not run this yet**
 
 The options `--train_files`, `--dev_files` and `--test_files` take a path to the relevant data, which was prepared in the section on [data formatting](DATA_FORMATTING.md).
 
@@ -178,11 +55,13 @@ To specify checkpoint directories, use the `--checkpoint_dir` parameter with `De
 
 ```
 python3 DeepSpeech.py \
-  --train_files persistent-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
-  --dev_files persistent-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
-  --test_files persistent-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
-  --checkpoint_dir persistent-data/checkpoints
+  --train_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
+  --dev_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
+  --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+  --checkpoint_dir deepspeech-data/checkpoints
 ```
+
+**Do not run this yet**
 
 ### Specifying the directory that the trained model should be exported to
 
@@ -192,12 +71,16 @@ To specify where the trained model should be saved, use the `--export-dir` param
 
 ```
 python3 DeepSpeech.py \
-  --train_files persistent-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
-  --dev_files persistent-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
-  --test_files persistent-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
-  --checkpoint_dir persistent-data/checkpoints \
-  --export_dir persistent-data/exported-model
+  --train_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
+  --dev_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
+  --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+  --checkpoint_dir deepspeech-data/checkpoints \
+  --export_dir deepspeech-data/exported-model
 ```
+
+**You can run this command to start training**
+
+## Possible errors
 
 ### `Failed to get convolution algorithm. This is probably because cuDNN failed to initialize, so try looking to see if a warning log message was printed above.` error when training
 
@@ -249,13 +132,13 @@ root@687a2e3516d7:/DeepSpeech/training/deepspeech_training/util# nano config.py
     c.session_config.gpu_options.allow_growth=True
 ```
 
-### Monitoring GPU use with `nvtop`
+## Monitoring GPU use with `nvtop`
 
 In a separate terminal (ie not from the session where you have the Docker container open), run the command `nvtop`. You should see the `DeepSpeech.py` process consuming all available GPUs.
 
 If you _do not_ see the GPU(s) being heavily utilised, you may be training only on your CPUs and you should double check your [environment](ENVIRONMENT.md).
 
-### Advanced training options
+## Advanced training options
 
 Advanced training options are available, such as _feature cache_ and _augmentation_. They are beyond the scope of this PlayBook, but you can [read more about them in the DeepSpeech documentation](https://deepspeech.readthedocs.io/en/v0.9.3/TRAINING.html#augmentation).
 

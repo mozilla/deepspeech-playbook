@@ -7,16 +7,18 @@
 - [Setting up your environment for training using DeepSpeech](#setting-up-your-environment-for-training-using-deepspeech)
   * [Contents](#contents)
   * [Installing dependencies for working with GPUs under Docker](#installing-dependencies-for-working-with-gpus-under-docker)
-  * [@todo what if someone has a non-NVIDIA GPU? Personally I think they're so rare that we should just assume NVIDIA GPUs.](#-todo-what-if-someone-has-a-non-nvidia-gpu--personally-i-think-they-re-so-rare-that-we-should-just-assume-nvidia-gpus)
     + [GPU drivers](#gpu-drivers)
   * [What is Docker and why is it recommended for training a model with DeepSpeech?](#what-is-docker-and-why-is-it-recommended-for-training-a-model-with-deepspeech-)
-  * [Creating a virtual environment and clone DeepSpeech](#creating-a-virtual-environment-and-clone-deepspeech)
-  * [Create and rename the Dockerfile](#create-and-rename-the-dockerfile)
   * [Install Docker](#install-docker)
+    + [Ensure that you create a `docker` group and that you add yourself to this group](#ensure-that-you-create-a--docker--group-and-that-you-add-yourself-to-this-group)
     + [Install the `nvidia-container-toolkit`](#install-the--nvidia-container-toolkit-)
-  * [Build the Docker image](#build-the-docker-image)
+  * [Pulling down a pre-built DeepSpeech Docker image](#pulling-down-a-pre-built-deepspeech-docker-image)
+    + [Testing the image by creating a container and running a script](#testing-the-image-by-creating-a-container-and-running-a-script)
+  * [Setting up a bind mount to store persistent data](#setting-up-a-bind-mount-to-store-persistent-data)
 
-This section of the Playbook assumes you are comfortable installing DeepSpeech and using it with a pre-trained model, and that you are comfortable setting up a Python _virtual environment_. Here, we provide information on setting up a Docker environment for training your own speech recognition model using DeepSpeech. We also cover dependencies Docker has for NVIDIA GPUs, so that you can use your GPU(s) for training a model.
+This section of the Playbook assumes you are comfortable installing DeepSpeech and using it with a pre-trained model, and that you are comfortable setting up a Python _virtual environment_.
+
+Here, we provide information on setting up a Docker environment for training your own speech recognition model using DeepSpeech. We also cover dependencies Docker has for NVIDIA GPUs, so that you can use your GPU(s) for training a model.
 
 ---
 
@@ -112,25 +114,6 @@ You are now ready to install Docker.
 
 [Docker](https://www.docker.com/why-docker) is virtualization software that allows a consistent collection of software, dependencies and environments to be packaged into a _container_ which is then run on a host, or many hosts. It is one way to manage the many software dependencies which are required for training a model with DeepSpeech, particularly if using an NVIDIA GPU.
 
-## Creating a virtual environment and clone DeepSpeech
-
-First, [follow the DeepSpeech documentation to create and activate a virtual environment and clone DeepSpeech into the environment](https://deepspeech.readthedocs.io/en/master/TRAINING.html). Install the DeepSpeech training code and dependencies.
-
-## Create and rename the Dockerfile
-
-Follow the DeepSpeech documentation to make the `Dockerfile`, ie
-
-```
-$ make Dockerfile.train
-```
-
-We now need to rename the `Dockerfile` so that we can build a Docker container in which to train.
-
-```
-$ cp Dockerfile.train Dockerfile
-```
-
-
 ## Install Docker
 
 First, you must install Docker on your host. Follow the [instructions on the Docker website](https://docs.docker.com/engine/install/ubuntu/).
@@ -138,6 +121,12 @@ First, you must install Docker on your host. Follow the [instructions on the Doc
 ### Ensure that you create a `docker` group and that you add yourself to this group
 
 Once you have installed Docker, be sure to follow the [post-installation](https://docs.docker.com/engine/install/linux-postinstall/) steps. These include setting up a `docker` group and adding your user account to this group. If you do not follow this step, you will need to use `sudo` with every Docker command, and this can have unexpected results.
+
+---
+
+If you try to use `docker` commands and constantly receive permission warnings, it's likely that you have forgotten this step.
+
+---
 
 ### Install the `nvidia-container-toolkit`
 
@@ -160,68 +149,158 @@ Next, install `nvidia-container-toolkit`:
 $ sudo apt-get install -y nvidia-container-toolkit
 ```
 
-## Build the Docker image
+## Pulling down a pre-built DeepSpeech Docker image
 
-Once you have installed Docker and the `nvidia-container-toolkit`, you are ready to build a Docker image using the `Dockerfile`. Once the image is built, you can then run the Docker container to perform training.
+Once you have installed Docker and the `nvidia-container-toolkit`, you are ready to build a Docker _image_. Although it's [possible to build your own Docker image from scratch](), we're going to use a pre-built DeepSpeech training image which is hosted on Docker Hub. Once the image is pulled down, you can then create a Docker _container_ from the image to perform training.
 
-**WARNING: This command will cause several gigabytes of data to be downloaded. Do not do this if you are on a metered internet connection.**
+As you become more proficient with using DeepSpeech, you can use the pre-built Docker image as the basis for your own images.
 
-Build the Docker image using the following command:
-
-```
-(deepspeech-training-venv) $ docker build -t deepspeech:0.9.3 .
-```
-
-The `-t` flag allows us to tag the image using a name, in this case `deepspeech:0.9.3`. This is helpful if you want to build separate Docker images, for example for different versions of DeepSpeech.
-
-As part of the build, the Docker image will train a small model to test that the image has been built correctly. It will finish with:
+**Running this command will download several gigabytes of data. Do not perform this command if you are on a limited or metered internet connection**
 
 ```
-Testing model on data/ldc93s1/ldc93s1.csv
-I Test epoch...
-Test on data/ldc93s1/ldc93s1.csv - WER: 0.090909, CER: 0.019231, loss: 7.840517
---------------------------------------------------------------------------------
-Best WER:
---------------------------------------------------------------------------------
-WER: 0.090909, CER: 0.019231, loss: 7.840517
- - wav: file:///DeepSpeech/data/ldc93s1/LDC93S1.wav
- - src: "she had your dark suit in greasy wash water all year"
- - res: "she had your dar suit in greasy wash water all year"
---------------------------------------------------------------------------------
-Median WER:
---------------------------------------------------------------------------------
-WER: 0.090909, CER: 0.019231, loss: 7.840517
- - wav: file:///DeepSpeech/data/ldc93s1/LDC93S1.wav
- - src: "she had your dark suit in greasy wash water all year"
- - res: "she had your dar suit in greasy wash water all year"
---------------------------------------------------------------------------------
-Worst WER:
---------------------------------------------------------------------------------
-WER: 0.090909, CER: 0.019231, loss: 7.840517
- - wav: file:///DeepSpeech/data/ldc93s1/LDC93S1.wav
- - src: "she had your dark suit in greasy wash water all year"
- - res: "she had your dar suit in greasy wash water all year"
---------------------------------------------------------------------------------
-Removing intermediate container 814bb18f5f7e
- ---> c2ec2476fedb
-Successfully built c2ec2476fedb
-Successfully tagged deepspeech:0.9.3
+$ docker pull mozilla/deepspeech-train:latest
+latest: Pulling from mozilla/deepspeech-train
+f08d8e2a3ba1: Already exists
+3baa9cb2483b: Already exists
+94e5ff4c0b15: Already exists
+1860925334f9: Already exists
+05cc64cc481f: Already exists
+b11f037be8e8: Already exists
+24379c211bf5: Already exists
+53981215c263: Already exists
+c0ceb2f35c41: Already exists
+561bb56e4cdc: Already exists
+234039146e10: Already exists
+337aa0f03969: Already exists
+dcdea3197954: Already exists
+c8801cd7156e: Already exists
+5d257706d831: Already exists
+82712d12e970: Already exists
+906db168d174: Pull complete
+c10704302cc5: Pull complete
+e2e47c9348fd: Pull complete
+abe58eddcb1d: Pull complete
+39d09406a9b6: Pull complete
+e7951492be3a: Pull complete
+9fa61ebf6d03: Pull complete
+e0ddd6e8433a: Pull complete
+d1063ba3c721: Pull complete
+08b710a537f3: Pull complete
+e2d3cd841a00: Pull complete
+c053d59fe6ba: Pull complete
+03f8cdcdf89b: Pull complete
+Digest: sha256:9af7b131e1114aed685917a1faf61198e36abdf33c8ef3ae960ca375a3e0643f
+Status: Downloaded newer image for mozilla/deepspeech-train:latest
+docker.io/mozilla/deepspeech-train:latest
 ```
 
-If you see this message, your Docker image has been built correctly. You can verify this by running the command `docker image ls` as below:
+If you do not which to use the `latest` DeepSpeech image, [a list of previous images is available](https://hub.docker.com/r/mozilla/deepspeech-train/tags?page=1&ordering=last_updated).
+
+You will now see the `mozilla/deepspeech-train` image when you run the command `docker image ls`:
 
 ```
-(deepspeech-training-venv) $ docker image ls
-
-REPOSITORY              TAG              IMAGE ID       CREATED         SIZE
-deepspeech              0.9.3            c2ec2476fedb   6 minutes ago   4.85GB
-tensorflow/tensorflow   1.15.4-gpu-py3   a1e8e97ee677   3 months ago    3.58GB
-
+$ docker image ls
+REPOSITORY                             TAG              IMAGE ID       CREATED         SIZE
+mozilla/deepspeech-train               latest           7cdc0bb1fe2a   7 days ago      4.77GB
 ```
 
-The `tensorflow` Docker image is a _child_ image of the DeepSpeech Docker image.
+### Testing the image by creating a container and running a script
 
+Now that you have your Docker image pulled down, you can create a _container_ from the image. Here, we're going to create a container and run a simple test to make sure that the image is working correctly.
+
+_You will need the `id` of the Docker image that you created when you  [set up your DeepSpeech training environment](ENVIRONMENT.md)._
+
+_In this example, the `id` of the Docker image is `7cdc0bb1fe2a`. Substitute it with your own._
+
+```
+$ docker run  -it --entrypoint /bin/bash 7cdc0bb1fe2a
+```
+
+The `entrypoint` instruction following `docker run` tells Docker to run the `/bin/bash` (ie shell) after creating the container.
+
+This command assumes that `/bin/bash` will be invoked as the `root` user. This is necessary, as the Docker container needs to make changes to the filesystem. If you use the `-u $(id -u):$(id -g)` switches, you will tell Docker to invoke `/bin/bash` as the current user of the host that is running the Docker container. You will likely encounter `permission denied` errors while running training.
+
+When you run the above command, you should see the following prompt:
+
+```
+________                               _______________                
+___  __/__________________________________  ____/__  /________      __
+__  /  _  _ \_  __ \_  ___/  __ \_  ___/_  /_   __  /_  __ \_ | /| / /
+_  /   /  __/  / / /(__  )/ /_/ /  /   _  __/   _  / / /_/ /_ |/ |/ /
+/_/    \___//_/ /_//____/ \____//_/    /_/      /_/  \____/____/|__/
+
+
+WARNING: You are running this container as root, which can cause new files in
+mounted volumes to be created as the root user on your host machine.
+
+To avoid this, run the container by specifying your user's userid:
+
+$ docker run -u $(id -u):$(id -g) args...
+
+root@d14b2d062526:/DeepSpeech#
+```
+
+In a separate terminal, you can see that you now have a Docker image running:
+
+```
+$ docker ps
+CONTAINER ID   IMAGE          COMMAND       CREATED              STATUS              PORTS     NAMES
+d14b2d062526   7cdc0bb1fe2a   "/bin/bash"   About a minute ago   Up About a minute             compassionate_rhodes
+```
+
+DeepSpeech includes a number of convenience scripts in the `bin` directory. They are named for the corpus they are configured for. To ensure that your Docker environment is functioning correctly, run one of these scripts (in the terminal session where your container is running).
+
+```
+root@d14b2d062526:/DeepSpeech/bin# ./bin/run-ldc93s1.sh
+```
+
+This will train on a single audio file for 200 epochs.
+
+We've now proved that the image is working correctly.
+
+## Setting up a bind mount to store persistent data
+
+Now that we have a Docker image pulled down, we can create a _container_ from the image, and do training from within the image.
+
+However, Docker containers are not _persistent_. This means that if the host on which the container is running reboots, or there is a fatal error within the container, all the results stored _within_ the container will be lost. We need to set up _persistent storage_ so that the checkpoints and exported model are stored _outside_ the container.
+
+To do this we create a [bind mount](https://docs.docker.com/storage/bind-mounts/) for Docker. A _bind mount_ allows Docker to store files externally to the container, on your local filesystem.
+
+First, stop and remove the container we created above.
+
+```
+$ docker rm -f d14b2d062526
+```
+
+_The ID of your Docker image will vary, use `docker ps` to find it._
+
+Next, we will create a new container, except this time we will also create a _bind mount_ so that it can store persistent data.
+
+First, we create a directory on our local system for the bind mount.
+
+```
+$ mkdir deepspeech-data
+```
+
+Next, we create a container and instruct it to use a bind mount to the directory.
+
+```
+$ docker run  -it \
+  --entrypoint /bin/bash \
+  --name deepspeech-training \
+  --mount type=bind,source="$(pwd)"/deepspeech-data,target=/DeepSpeech/deepspeech-data \
+  7cdc0bb1fe2a
+```
+
+From within the container, the `deepspeech-data` directory will now be available:
+
+```
+root@e964b1e5a60c:/DeepSpeech# ls | grep deepspeech-data
+deepspeech-data
+```
 
 You are now ready to begin training your model.
+
+---
 
 [Home](README.md) | [Previous - Acoustic Model and Language Model](AM_vs_LM.md) | [Next - Training your model](TRAINING.md)
