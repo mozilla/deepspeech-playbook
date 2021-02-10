@@ -288,9 +288,12 @@ Next, we create a container and instruct it to use a bind mount to the directory
 $ docker run  -it \
   --entrypoint /bin/bash \
   --name deepspeech-training \
+  --gpus-all \
   --mount type=bind,source="$(pwd)"/deepspeech-data,target=/DeepSpeech/deepspeech-data \
   7cdc0bb1fe2a
 ```
+
+Note that we all pass the `--gpus-all` parameter here to instruct Docker to use all available GPUs. If you need to restrict the use of GPUs, then please consult the [Docker documentation](https://docs.docker.com/config/containers/resource_constraints/). You can also restrict the amount of memory or CPU(s) that the Docker container consumes. This might be useful if you need to use the host that you're training on _at the same time_ as the training is occurring, or if you're on a shared host or cluster (for example at a university).
 
 From within the container, the `deepspeech-data` directory will now be available:
 
