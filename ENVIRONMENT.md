@@ -288,7 +288,7 @@ Next, we create a container and instruct it to use a bind mount to the directory
 $ docker run  -it \
   --entrypoint /bin/bash \
   --name deepspeech-training \
-  --gpus-all \
+  --gpus all \
   --mount type=bind,source="$(pwd)"/deepspeech-data,target=/DeepSpeech/deepspeech-data \
   7cdc0bb1fe2a
 ```
