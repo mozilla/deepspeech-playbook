@@ -57,7 +57,17 @@ For [more information on creating a memory-mappable protocol buffer file, consul
 
 ## Exporting a tflite model
 
-The `tflite` engine ([more information on tflite](https://www.tensorflow.org/lite/)) is designed to allow inference on mobile, IoT and embedded devices. If you want to export a model compatible with `tflite`, you will need to use the `--export-flite` flags with the `DeepSpeech.py` script.
+The `tflite` engine ([more information on tflite](https://www.tensorflow.org/lite/)) is designed to allow inference on mobile, IoT and embedded devices. If you have _not_ yet trained a model, and you want to export a model compatible with `tflite`, you will need to use the `--export_tflite` flags with the `DeepSpeech.py` script. For example:
+
+```
+python3 DeepSpeech.py \
+  --train_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
+  --dev_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
+  --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+  --checkpoint_dir deepspeech-data/checkpoints \
+  --export_dir deepspeech-data/exported-model \
+  --export_tflite
+```
 
 If you have _already_ trained a model, and wish to export to `tflite` format, you can re-export it by specifying the same `checkpoint_dir` that you used for training, and by passing the `--export_tflite` parameter.
 
