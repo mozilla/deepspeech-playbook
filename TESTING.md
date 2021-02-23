@@ -11,9 +11,116 @@
   * [Heuristics](#heuristics)
   * [Fine tuning and transfer learning](#fine-tuning-and-transfer-learning)
 
+_This section of the PlayBook covers testing your trained model and setup before [deployment](DEPLOYMENT.md). If you need to test the DeepSpeech source code itself, please consult the [source code tests](https://github.com/mozilla/DeepSpeech/tree/master/tests)._
+
 Let's say that you've already trained an acoustic model and a language model (a [scorer](SCORER.md)). Congratulations! But before you [deploy](DEPLOYMENT.md) your setup, you will need to evaluate how well it will work in practice - on your intended use case.
 
 We're talking here about a _setup_ rather than a trained _model_ on purpose - as there are multiple factors that influence how well a _setup_ performs in real life. There are multiple factors that influence the success of an application, and you need to keep all these factors in mind. The acoustic model and language model work with each other to turn speech into text, and there are lots of ways (i.e. decoding hyperparameter settings) with which you can combine those two models.
+
+## Gathering training information
+
+When you invoked `DeepSpeech.py` in the [training](TRAINING.md) section, and trained a model, the training would have finished by printing out a set of WER and CER metrics. It would have looked like this:
+
+```
+Testing model on deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv
+Test epoch | Steps: 1844 | Elapsed Time: 0:51:11                                                                                   
+Test on deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv - WER: 1.000000, CER: 0.824103, loss: 104.989326
+--------------------------------------------------------------------------------
+Best WER:
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.873786, loss: 317.729767
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_23819387.wav
+ - src: "kami percaya bahwa perdamaian dari koeksistensi dua sistem sosial yang berbeda sepenuhnya bisa terwujud"
+ - res: "aaaaaaaaaaaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.851485, loss: 295.564240
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_19748999.wav
+ - src: "jika anda mencari informasi tentang pergerakan esperanto di indonesia silakan kunjungi halaman webnya"
+ - res: "aaaaaaaaaaaaaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.875000, loss: 283.844696
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_23819383.wav
+ - src: "indah memiliki standar hidup yang tinggi tidak heran dia dikenal sebagai orang yang perfeksionis"
+ - res: "aaaaaaaaaaaaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.818182, loss: 276.511597
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_24015532.wav
+ - src: "selain itu bahasa gaul juga menciptakan kosakata baru yang terbentuk melalui kaidah kaidah tertentu"
+ - res: "aaaaaaaaaaaaaaaaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.820000, loss: 269.262909
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_24015257.wav
+ - src: "berbagai bahasa daerah dan bahasa asing menjadi bahasa serapan dan kemudian menjadi bahasa indonesia"
+ - res: "aaaaaaaaaaaaaaaaaa"
+--------------------------------------------------------------------------------
+Median WER:
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.800000, loss: 97.870811
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_20954705.wav
+ - src: "pemandangan dari hotel sangat indah"
+ - res: "aaaaaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.941176, loss: 97.848030
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_20387916.wav
+ - src: "hari ini hujan turun rintik rintik"
+ - res: "aaaaaaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.800000, loss: 97.800034
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_20879262.wav
+ - src: "berapa biaya sewa untuk ruangan ini"
+ - res: "aaaaaaaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.705882, loss: 97.773476
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_19611909.wav
+ - src: "saya bukan gay tapi pacar saya gay"
+ - res: "aaaaaaaaaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.806452, loss: 97.725914
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_24018261.wav
+ - src: "selamat datang di san fransisco"
+ - res: "aaaaaaaaaaa"
+--------------------------------------------------------------------------------
+Worst WER:
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.800000, loss: 25.830986
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_22546523.wav
+ - src: "tidak"
+ - res: "aaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 1.333333, loss: 25.499653
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_22185104.wav
+ - src: "nol"
+ - res: "aaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.800000, loss: 23.874924
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_22546522.wav
+ - src: "empat"
+ - res: "aaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.750000, loss: 22.441967
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_22528020.wav
+ - src: "tiga"
+ - res: "aaaa"
+--------------------------------------------------------------------------------
+WER: 1.000000, CER: 0.750000, loss: 21.356133
+ - wav: file://deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/common_voice_id_22412536.wav
+ - src: "lima"
+ - res: "aaaa"
+--------------------------------------------------------------------------------
+
+```
+
+_Note: the WER and CER on this output example are both poor because a custom scorer for the language hasn't been built yet._
+
+If you didn't keep the training information, then as long as you stored _checkpoints_ while training, then you will be able to re-run just the _testing_ part of training by using the following command:
+
+```
+root@9d052f0c3dcf:/DeepSpeech# python3 DeepSpeech.py \
+    --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+    --checkpoint_dir deepspeech-data/checkpoints
+```
+
+By passing just the `--test_files` parameter and the `--checkpoint_dir` parameter, `DeepSpeech.py` will re-run testing. Note that this command will fail if you don't have _checkpoints_ stored.
 
 ## Word Error Rate, Character Error Rate, loss and model performance
 
