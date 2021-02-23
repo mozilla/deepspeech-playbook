@@ -158,8 +158,8 @@ As you become more proficient with using DeepSpeech, you can use the pre-built D
 **Running this command will download several gigabytes of data. Do not perform this command if you are on a limited or metered internet connection**
 
 ```
-$ docker pull mozilla/deepspeech-train:latest
-latest: Pulling from mozilla/deepspeech-train
+$ docker pull mozilla/deepspeech-train:v0.9.3
+v0.9.3: Pulling from mozilla/deepspeech-train
 f08d8e2a3ba1: Already exists
 3baa9cb2483b: Already exists
 94e5ff4c0b15: Already exists
@@ -190,18 +190,18 @@ e2d3cd841a00: Pull complete
 c053d59fe6ba: Pull complete
 03f8cdcdf89b: Pull complete
 Digest: sha256:9af7b131e1114aed685917a1faf61198e36abdf33c8ef3ae960ca375a3e0643f
-Status: Downloaded newer image for mozilla/deepspeech-train:latest
-docker.io/mozilla/deepspeech-train:latest
+Status: Downloaded newer image for mozilla/deepspeech-train:v0.9.3
+docker.io/mozilla/deepspeech-train:v0.9.3
 ```
 
-If you do not which to use the `latest` DeepSpeech image, [a list of previous images is available](https://hub.docker.com/r/mozilla/deepspeech-train/tags?page=1&ordering=last_updated).
+If you do not which to use the `v0.9.3` DeepSpeech image, [a list of previous images is available](https://hub.docker.com/r/mozilla/deepspeech-train/tags?page=1&ordering=last_updated).
 
 You will now see the `mozilla/deepspeech-train` image when you run the command `docker image ls`:
 
 ```
 $ docker image ls
 REPOSITORY                             TAG              IMAGE ID       CREATED         SIZE
-mozilla/deepspeech-train               latest           7cdc0bb1fe2a   7 days ago      4.77GB
+mozilla/deepspeech-train               v0.9.3           7cdc0bb1fe2a   7 days ago      4.77GB
 ```
 
 ### Testing the image by creating a container and running a script
@@ -293,7 +293,7 @@ $ docker run  -it \
   7cdc0bb1fe2a
 ```
 
-Note that we all pass the `--gpus-all` parameter here to instruct Docker to use all available GPUs. If you need to restrict the use of GPUs, then please consult the [Docker documentation](https://docs.docker.com/config/containers/resource_constraints/). You can also restrict the amount of memory or CPU(s) that the Docker container consumes. This might be useful if you need to use the host that you're training on _at the same time_ as the training is occurring, or if you're on a shared host or cluster (for example at a university).
+Note that we all pass the `--gpus all` parameter here to instruct Docker to use all available GPUs. If you need to restrict the use of GPUs, then please consult the [Docker documentation](https://docs.docker.com/config/containers/resource_constraints/). You can also restrict the amount of memory or CPU(s) that the Docker container consumes. This might be useful if you need to use the host that you're training on _at the same time_ as the training is occurring, or if you're on a shared host or cluster (for example at a university).
 
 From within the container, the `deepspeech-data` directory will now be available:
 
