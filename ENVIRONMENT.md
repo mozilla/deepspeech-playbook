@@ -208,12 +208,10 @@ mozilla/deepspeech-train               v0.9.3           7cdc0bb1fe2a   7 days ag
 
 Now that you have your Docker image pulled down, you can create a _container_ from the image. Here, we're going to create a container and run a simple test to make sure that the image is working correctly.
 
-_You will need the `id` of the Docker image that you created when you  [set up your DeepSpeech training environment](ENVIRONMENT.md)._
-
-_In this example, the `id` of the Docker image is `7cdc0bb1fe2a`. Substitute it with your own._
+_Note that you can refer to Docker images by `id` - such as `7cdc0bb1fe2a` in the example above, or by the image's name and `tag`. Here, we will be using the image name and `tag` - ie `mozilla/deepspeech-train:v0.9.3`._
 
 ```
-$ docker run  -it --entrypoint /bin/bash 7cdc0bb1fe2a
+$ docker run  -it --name ds-test --entrypoint /bin/bash mozilla/deepspeech-train:v0.9.3
 ```
 
 The `entrypoint` instruction following `docker run` tells Docker to run the `/bin/bash` (ie shell) after creating the container.
@@ -269,10 +267,8 @@ To do this we create a [bind mount](https://docs.docker.com/storage/bind-mounts/
 First, stop and remove the container we created above.
 
 ```
-$ docker rm -f d14b2d062526
+$ docker rm -f ds-test
 ```
-
-_The ID of your Docker image will vary, use `docker ps` to find it._
 
 Next, we will create a new container, except this time we will also create a _bind mount_ so that it can store persistent data.
 
@@ -293,7 +289,7 @@ $ docker run  -it \
   7cdc0bb1fe2a
 ```
 
-Note that we all pass the `--gpus all` parameter here to instruct Docker to use all available GPUs. If you need to restrict the use of GPUs, then please consult the [Docker documentation](https://docs.docker.com/config/containers/resource_constraints/). You can also restrict the amount of memory or CPU(s) that the Docker container consumes. This might be useful if you need to use the host that you're training on _at the same time_ as the training is occurring, or if you're on a shared host or cluster (for example at a university).
+We all pass the `--gpus all` parameter here to instruct Docker to use all available GPUs. If you need to restrict the use of GPUs, then please consult the [Docker documentation](https://docs.docker.com/config/containers/resource_constraints/). You can also restrict the amount of memory or CPU(s) that the Docker container consumes. This might be useful if you need to use the host that you're training on _at the same time_ as the training is occurring, or if you're on a shared host or cluster (for example at a university).
 
 From within the container, the `deepspeech-data` directory will now be available:
 
