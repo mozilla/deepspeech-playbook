@@ -9,16 +9,20 @@
   * [Making training files available to the Docker container](#making-training-files-available-to-the-docker-container)
   * [Running training](#running-training)
     + [Specifying checkpoint directories so that you can restart training from a checkpoint](#specifying-checkpoint-directories-so-that-you-can-restart-training-from-a-checkpoint)
+      - [Advanced checkpoint configuration](#advanced-checkpoint-configuration)
+        * [How checkpoints are stored](#how-checkpoints-are-stored)
+        * [Managing disk space and checkpoints](#managing-disk-space-and-checkpoints)
+        * [Different checkpoints for loading and saving](#different-checkpoints-for-loading-and-saving)
     + [Specifying the directory that the trained model should be exported to](#specifying-the-directory-that-the-trained-model-should-be-exported-to)
   * [Other useful parameters that can be passed to `DeepSpeech.py`](#other-useful-parameters-that-can-be-passed-to--deepspeechpy-)
     + [`n_hidden` parameter](#-n-hidden--parameter)
     + [Reduce learning rate on plateau (RLROP)](#reduce-learning-rate-on-plateau--rlrop-)
     + [Early stopping](#early-stopping)
+  * [Steps and epochs](#steps-and-epochs)
   * [Advanced training options](#advanced-training-options)
   * [Monitoring GPU use with `nvtop`](#monitoring-gpu-use-with--nvtop-)
   * [Possible errors](#possible-errors)
     + [`Failed to get convolution algorithm. This is probably because cuDNN failed to initialize, so try looking to see if a warning log message was printed above.` error when training](#-failed-to-get-convolution-algorithm-this-is-probably-because-cudnn-failed-to-initialize--so-try-looking-to-see-if-a-warning-log-message-was-printed-above--error-when-training)
-
 
 ## Making training files available to the Docker container
 
@@ -64,6 +68,84 @@ python3 DeepSpeech.py \
   --dev_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
   --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
   --checkpoint_dir deepspeech-data/checkpoints
+```
+
+**Do not run this yet**
+
+#### Advanced checkpoint configuration
+
+##### How checkpoints are stored
+
+_Checkpoints_ are stored as [Tensorflow `tf.Variable` objects](https://www.tensorflow.org/guide/checkpoint). This is a binary file format; that is, you won't be able to read it with a text editor. The _checkpoint_ stores all the weights and biases of the current state of the _neural network_ as training progresses.
+
+_Checkpoints_ are named by the total number of steps completed. For example, if you train for 100 epochs at 2000 steps per epoch, then the final _checkpoint_ will be named `20000`.
+
+```
+~/deepspeech-data/checkpoints-true-id$ ls
+total 1053716
+     4 drwxr-xr-x 2 root      root           4096 Feb 24 14:17 ./
+     4 drwxrwxr-x 5 root      root      4096 Feb 24 13:18 ../
+174376 -rw-r--r-- 1 root      root      178557296 Feb 24 14:11 best_dev-12774.data-00000-of-00001
+     4 -rw-r--r-- 1 root      root           1469 Feb 24 14:11 best_dev-12774.index
+  1236 -rw-r--r-- 1 root      root        1262944 Feb 24 14:11 best_dev-12774.meta
+     4 -rw-r--r-- 1 root      root             85 Feb 24 14:11 best_dev_checkpoint
+     4 -rw-r--r-- 1 root      root            247 Feb 24 14:17 checkpoint
+     4 -rw-r--r-- 1 root      root           3888 Feb 24 13:18 flags.txt
+174376 -rw-r--r-- 1 root      root      178557296 Feb 24 14:09 train-12774.data-00000-of-00001
+     4 -rw-r--r-- 1 root      root           1469 Feb 24 14:09 train-12774.index
+  1236 -rw-r--r-- 1 root      root        1262938 Feb 24 14:09 train-12774.meta
+174376 -rw-r--r-- 1 root      root      178557296 Feb 24 14:13 train-14903.data-00000-of-00001
+     4 -rw-r--r-- 1 root      root           1469 Feb 24 14:13 train-14903.index
+  1236 -rw-r--r-- 1 root      root        1262938 Feb 24 14:13 train-14903.meta
+174376 -rw-r--r-- 1 root      root      178557296 Feb 24 14:17 train-17032.data-00000-of-00001
+     4 -rw-r--r-- 1 root      root           1469 Feb 24 14:17 train-17032.index
+  1236 -rw-r--r-- 1 root      root        1262938 Feb 24 14:17 train-17032.meta
+174376 -rw-r--r-- 1 root      root      178557296 Feb 24 14:01 train-19161.data-00000-of-00001
+     4 -rw-r--r-- 1 root      root           1469 Feb 24 14:01 train-19161.index
+  1236 -rw-r--r-- 1 root      root        1262938 Feb 24 14:01 train-19161.meta
+174376 -rw-r--r-- 1 root      root      178557296 Feb 24 14:05 train-21290.data-00000-of-00001
+     4 -rw-r--r-- 1 root      root           1469 Feb 24 14:05 train-21290.index
+```
+
+##### Managing disk space and checkpoints
+
+_Checkpoints_ can consume a lot of disk space, so you may wish to configure how often a _checkpoint_ is written to disk, and how many _checkpoints_ are stored.
+
+* `--checkpoint_secs` specifies the time interval for storing a _checkpoint_. The default is `600`, or every five minutes. You may wish to increase this if you have limited disk space.
+
+* `--max_to_keep` specifies how many _checkpoints_ to keep. The default is `5`. You may wish to decrease this if you have limited disk space.
+
+In this example we will store a _checkpoint_ every 15 minutes, and keep only 3 _checkpoints_.
+
+```
+python3 DeepSpeech.py \
+  --train_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
+  --dev_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
+  --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+  --checkpoint_dir deepspeech-data/checkpoints \
+  --checkpoint_secs 1800 \
+  --max_to_keep 3
+```
+
+**Do not run this yet**
+
+##### Different checkpoints for loading and saving
+
+In some cases, you may wish to _load_ _checkpoints_ from one location, but _save_ _checkpoints_ to another location - for example if you are doing fine tuning or transfer learning.
+
+* `--load_checkpoint_dir` specifies the directory to load _checkpoints_ from.
+
+* `--save_checkpoint_dir` specifies the directory to save _checkpoints_ to.
+
+In this example we will store a _checkpoint_ every 15 minutes, and keep only 3 _checkpoints_.
+
+```
+python3 DeepSpeech.py \
+  --train_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
+  --dev_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
+  --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+  --load_checkpoint_dir deepspeech-data/checkpoints-to-train-from \
+  --save_checkpoint_dir deepspeech-data/checkpoints-to-save-to
 ```
 
 **Do not run this yet**
@@ -167,6 +249,25 @@ python3 DeepSpeech.py \
   --es_epochs 10 \
   --es_min_delta 0.06
 ```
+
+## Steps and epochs
+
+In training, a _step_ is one update of the [gradient](https://en.wikipedia.org/wiki/Gradient_descent); that is, one attempt to find the lowest, or minimal _loss_. The amount of processing done in one _step_ depends on the _batch size_. By default, `DeepSpeech.py` has a _batch size_ of `1`. That is, it processes one audio file in each _step_.
+
+An _epoch_ is one full cycle through the training data. That is, if you have 1000 files listed in your `train.tsv` file, then you will expect to process 1000 _steps_ per epoch (assuming a _batch size_ of `1`).
+
+To find out how many _steps_ to expect in each _epoch_, you can count the number of lines in your `train.tsv` file:
+
+```
+~/deepspeech-data/cv-corpus-6.1-2020-12-11/id$ wc -l train.tsv
+2131 train.tsv
+```
+
+In this case there would be `2131` _steps_ per _epoch_.
+
+* `--epochs` specifies how many _epochs_ to train. It has a default of `75`, which would be appropriate for training tens to hundreds of hours of audio. If you have thousands of hours of audio, you may wish to increase the number of _epochs_ to around 150-300.
+
+* `--train_batch_size`, `--dev_batch_size`, `--test_batch_size` all specify the _batch size_ per _step_. These all have a default value of `1`. Increasing the _batch size_ increases the amount of memory required to process the _step_; you need to be aware of this before increasing the _batch size_.
 
 ## Advanced training options
 
