@@ -43,16 +43,24 @@ If you are using data from Common Voice for training a model, you will need to p
 
 In this example we will prepare the Indonesian dataset for training, but you can use any language from Common Voice that you prefer. We've chosen Indonesian as it has the same [orthographic alphabet](ALPHABET.md) as English, which means we don't have to use a different `alphabet.txt` file for training; we can use the default.
 
-This example assumes you have already [set up a Docker environment with an attached volume for training](TRAINING.md).
+---
+This example assumes you have already [set up a Docker [environment](ENVIRONMENT.md) for [training](TRAINING.md). If you have not yet set up your Docker environment, we suggest you pause here and do this first.
+---
 
-First, [download the dataset from Common Voice](https://commonvoice.mozilla.org/en/datasets). Extract the archive into your `deepspeech-data` Docker volume. Make sure that you place the files into the `_data` directory, otherwise they will not be available from within your Docker container.
+First, [download the dataset from Common Voice](https://commonvoice.mozilla.org/en/datasets), and extract the archive into your `deepspeech-data` directory. This makes it available to your Docker container through a _bind mount_. Start your DeepSpeech Docker container with the `deepspeech-data` directory as a _bind mount_ (this is covered in the [environment](ENVIRONMENT.md) section).
 
-Start your DeepSpeech Docker container with the `deepspeech-data` volume attached. Your CV corpus data should be available from within the Docker container.
+Your CV corpus data should be available from within the Docker container.
 
  ```
- root@3de3afbe5d6f:/DeepSpeech# ls  persistent-data/cv-corpus-6.1-2020-12-11/id/
+ root@3de3afbe5d6f:/DeepSpeech# ls  deepspeech-data/cv-corpus-6.1-2020-12-11/id/
  clips    invalidated.tsv  reported.tsv  train.tsv
  dev.tsv  other.tsv        test.tsv      validated.tsv
+```
+
+The `deepspeech-training:v0.9.3` Docker image _does not_ come with `sox`, which is a package used for processing Common Voice data. We need to install `sox` first.
+
+```
+root@4b39be3b0ffc:/DeepSpeech# apt-get -y update && apt-get install -y sox
 ```
 
 Next, we will run the Common Voice importer that ships with DeepSpeech.
