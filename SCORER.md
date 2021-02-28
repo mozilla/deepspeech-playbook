@@ -29,6 +29,8 @@ You may need to build your own scorer - your own _language model_ if:
 
 ### Building your own scorer
 
+_This section assumes that you are using a Docker image and container for training, as outlined in the [environment](ENVIRONMENT.md) section. If you are not using the Docker image, then some of the scripts such as `generate_lm.py` will not be available in your environment._
+
 The process for building your own scorer comprises the following steps:
 
 1. Having, or preparing, a text file (in `.txt` or `.txt.gz` format), with one phrase or word on each line. If you are training a speech recognition model for a particular domain - such as technical words, medical transcription, agricultural terms etc, then they would appear in the text file.
