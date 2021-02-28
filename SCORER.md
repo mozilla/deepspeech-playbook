@@ -110,7 +110,7 @@ total 1184
 
 Next, we need to install the `native_client` package, which contains the `generate_scorer_package`. This is _not_ pre-built into the DeepSpeech Docker image.
 
-The `generate_scorer_package`, once installed, is usable on all platforms supported by DeepSpeech. This is so that developers can generate scorers on-device, such as on an Android device, or Raspberry Pi 3.
+The `generate_scorer_package`, once installed via the `native client` package, is usable on _all platforms_ supported by DeepSpeech. This is so that developers can generate scorers _on-device_, such as on an Android device, or Raspberry Pi 3.
 
 To install `generate_scover_package`, first download the relevant `native client` package from the [DeepSpeech GitHub releases page](https://github.com/mozilla/DeepSpeech/releases/tag/v0.9.3) into the `data/lm` directory. The Docker image uses Ubuntu Linux, so you should use the `native_client.amd64.cuda.linux.tar.xz` package.
 
@@ -170,9 +170,9 @@ total 1820
  52 -rw-r--r-- 1 root root  51178 Feb 24 08:05 vocab-500000.txt
 ```
 
-#### Using the scorer file in training
+#### Using the scorer file in model training
 
-You now have your own scorer file that can be used in training using the `--scorer` parameter.
+You now have your own scorer file that can be used during the model training process using the `--scorer` parameter.
 
 For example:
 
