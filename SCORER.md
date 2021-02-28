@@ -110,10 +110,9 @@ total 1184
 
 Next, we need to install the `native_client` package, which contains the `generate_scorer_package`. This is _not_ pre-built into the DeepSpeech Docker image.
 
-First, download the relevant `native client` package from the [DeepSpeech GitHub releases page](https://github.com/mozilla/DeepSpeech/releases/tag/v0.9.3) into the `data/lm` directory. The Docker image uses Ubuntu Linux, so you should use the `native_client.amd64.cuda.linux.tar.xz` package.
+The `generate_scorer_package`, once installed, is usable on all platforms supported by DeepSpeech. This is so that developers can generate scorers on-device, such as on an Android device, or Raspberry Pi 3.
 
-
-https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/native_client.amd64.cuda.linux.tar.xz
+To install `generate_scover_package`, first download the relevant `native client` package from the [DeepSpeech GitHub releases page](https://github.com/mozilla/DeepSpeech/releases/tag/v0.9.3) into the `data/lm` directory. The Docker image uses Ubuntu Linux, so you should use the `native_client.amd64.cuda.linux.tar.xz` package.
 
 The easiest way to do this is to use `wget`:
 
