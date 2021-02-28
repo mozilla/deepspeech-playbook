@@ -15,7 +15,8 @@
   * [Pulling down a pre-built DeepSpeech Docker image](#pulling-down-a-pre-built-deepspeech-docker-image)
     + [Testing the image by creating a container and running a script](#testing-the-image-by-creating-a-container-and-running-a-script)
   * [Setting up a bind mount to store persistent data](#setting-up-a-bind-mount-to-store-persistent-data)
-
+  * [Extending the base `deepspeech-training` Docker image for your needs](#extending-the-base--deepspeech-training--docker-image-for-your-needs)
+  
 This section of the Playbook assumes you are comfortable installing DeepSpeech and using it with a pre-trained model, and that you are comfortable setting up a Python _virtual environment_.
 
 Here, we provide information on setting up a Docker environment for training your own speech recognition model using DeepSpeech. We also cover dependencies Docker has for NVIDIA GPUs, so that you can use your GPU(s) for training a model.
@@ -298,7 +299,27 @@ root@e964b1e5a60c:/DeepSpeech# ls | grep deepspeech-data
 deepspeech-data
 ```
 
-You are now ready to begin training your model.
+You are now ready to begin [training](TRAINING.md) your model.
+
+## Extending the base `deepspeech-training` Docker image for your needs
+
+As you become more comfortable training speech recognition models with DeepSpeech, you may wish to extend the base Docker image. You can do this using the `FROM` instruction in a `Dockerfile`, for example:
+
+```
+# Custom Dockerfile for training models using DeepSpeech
+
+# Get the latest DeepSpeech image
+FROM mozilla/deepspeech-train:v0.9.3
+
+# Install nano editor
+RUN apt-get -y update && apt-get install -y nano
+
+# Install sox for inference and for processing Common Voice data
+RUN apt-get -y update && apt-get install -y sox
+
+```
+
+You can then use `docker build` with this `Dockerfile` to build your own custom Docker image.
 
 ---
 
