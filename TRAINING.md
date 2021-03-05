@@ -18,6 +18,7 @@
     + [`n_hidden` parameter](#-n-hidden--parameter)
     + [Reduce learning rate on plateau (RLROP)](#reduce-learning-rate-on-plateau--rlrop-)
     + [Early stopping](#early-stopping)
+    + [Dropout rate](#dropout-rate)
   * [Steps and epochs](#steps-and-epochs)
   * [Advanced training options](#advanced-training-options)
   * [Monitoring GPU use with `nvtop`](#monitoring-gpu-use-with--nvtop-)
@@ -248,6 +249,35 @@ python3 DeepSpeech.py \
   --early_stop true \
   --es_epochs 10 \
   --es_min_delta 0.06
+```
+
+### Dropout rate
+
+In machine learning, one of the risks during training is that of [_overfitting_](https://en.wikipedia.org/wiki/Overfitting). _Overfitting_ is where training creates a model that does not _generalize_ well. That is, it _fits_ to only the set of data on which it is trained. During inference, new data is not recognised accurately.
+
+_Dropout_ is a technical approach to reduce _overfitting_. In _dropout_, nodes are randomly removed from the neural network created during training. This simulates the effect of more diverse data, and is a computationally cheap way of reducing _overfitting_, and improving the _generalizability_ of the model.
+
+_Dropout_ can be set for any layer of a neural network. The parameter that has the most effect for DeepSpeech training is `--dropout_rate`, which controls  the feedforward layers of the neural network. To see the full set of _dropout parameters_, consult the DeepSpeech documentation.
+
+* The `-dropout_rate` parameter specifies how many nodes should be dropped from the neural network during training. The default value is `0.05`. However, if you are training on less than thousands of hours of voice data, you will find a value of `0.3` to `0.4` works better to prevent overfitting.
+
+An example of training with this parameter would be:
+
+```
+python3 DeepSpeech.py \
+  --train_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
+  --dev_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
+  --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+  --checkpoint_dir deepspeech-data/checkpoints \
+  --export_dir deepspeech-data/exported-model \
+  --n_hidden 64 \
+  --reduce_lr_on_plateau true \
+  --plateau_epochs 8 \
+  --plateau_reduction 0.08 \
+  --early_stop true \
+  --es_epochs 10 \
+  --es_min_delta 0.06 \
+  --dropout_rate 0.3
 ```
 
 ## Steps and epochs
