@@ -31,15 +31,19 @@ You may need to build your own scorer - your own _language model_ if:
 
 _This section assumes that you are using a Docker image and container for training, as outlined in the [environment](ENVIRONMENT.md) section. If you are not using the Docker image, then some of the scripts such as `generate_lm.py` will not be available in your environment._
 
+_This section also assumes that you have already [trained a model](TRAINING.md) and have stored checkpoints for the trained model. This is required to generate the `--default_alpha` and `--default_beta` parameters that are used by the `lm_optimizer.py` script._
+
 The process for building your own scorer comprises the following steps:
 
 1. Having, or preparing, a text file (in `.txt` or `.txt.gz` format), with one phrase or word on each line. If you are training a speech recognition model for a particular domain - such as technical words, medical transcription, agricultural terms etc, then they would appear in the text file.
 
-2. Using the `generate_lm.py` script which is distributed with DeepSpeech, along with the text file, to create two files, called `lm.binary` and `vocab-500000.txt`.
+2. Using the `lm_optimizer.py` script with _checkpoints_ from a trained model to generate values for the parameters `--default_alpha` and `--default_beta` that are used by the `generate_scorer_package` script.
 
-3. Downloading the prebuilt `native_client` from the DeepSpeech repository on GitHub, and using the `generate_scorer_package` to create a `kenlm.scorer` file.
+3. Using the `generate_lm.py` script which is distributed with DeepSpeech, along with the text file, to create two files, called `lm.binary` and `vocab-500000.txt`.
 
-4. Using the `kenlm.scorer` file as the _external_scorer_ passed to `DeepSpeech.py` during training.
+4. Downloading the prebuilt `native_client` from the DeepSpeech repository on GitHub, and using the `generate_scorer_package` to create a `kenlm.scorer` file.
+
+5. Using the `kenlm.scorer` file as the _external_scorer_ passed to `DeepSpeech.py` during training.
 
 In the following example we will create a custom external scorer file for Bahasa Indonesia (BCP47: `id-ID`).
 
@@ -68,6 +72,57 @@ The `indonesian-sentences.txt` file is stored on the local filesystem in the `de
 ~/deepspeech-data$ ls | grep indonesian-sentences
  476 -rw-rw-r--  1 root root  483481 Feb 24 19:02 indonesian-sentences.txt
 ```
+
+#### Using `lm_optimizer.py` with the text file to generate values for the parameters `--default_alpha` and `--default_beta` that are used by the `lm_optimizer.py` script
+
+The `lm_optimizer.py` script is located in the `DeepSpeech` directory if you have set up your [environment][ENVIRONMENT.md] as outlined in the PlayBook.
+
+```
+root@57e6bf4eeb1c:/DeepSpeech# ls | grep lm_optimizer.py
+lm_optimizer.py
+```
+
+This script takes a text file, e.g. `indonesian-sentences.txt`, and a set of _checkpoints_, and determines the optimal `--default_alpha` and `--default_beta` values. These are then passed to `generate_lm.py` in the next step.
+
+**This step assumes you already have a trained model, and a set of saved _checkpoints_. For more information on _checkpoints_, see the [training](TRAINING.md) page.**
+
+Call `lm_optimizer.py` and pass it the text file, `--train_files`, `--dev_files`, `--test_files` and a `--checkpoint_dir` directory.
+
+```
+root@57e6bf4eeb1c:/DeepSpeech# python3 lm_optimizer.py \
+>   deepspeech-data/indonesian-sentences.txt \
+>   --train_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
+>   --dev_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
+>   --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+>   --checkpoint_dir deepspeech-data/checkpoints
+```
+
+`lm_optimizer.py` will create a new _study_.
+
+```
+[I 2021-03-05 02:04:23,041] A new study created in memory with name: no-name-38c8e8cb-0cc2-4f53-af0e-7a7bd3bc5159
+```
+
+It will then run _testing_ and output a trial score.
+
+```
+[I 2021-03-02 12:48:15,336] Trial 0 finished with value: 1.0 and parameters: {'lm_alpha': 1.0381777700987271, 'lm_beta': 0.02094605391055826}. Best is trial 0 with value: 1.0.
+```
+
+By default, `lm_optimizer.py` will run `6` trials, and identify the trial with the most optimal parameters.
+
+```
+[I 2021-03-02 17:50:00,662] Trial 6 finished with value: 1.0 and parameters: {'lm_alpha': 3.1660260368070423, 'lm_beta': 4.7438794403688735}. Best is trial 0 with value: 1.0.
+```
+
+The optimal parameters `--default_alpha` and `--default_beta` are now known, and can be used with `generate_scorer_package`. In this case, the optimal settings are:
+
+```
+--default_alpha 1.0381777700987271
+--default_beta 0.02094605391055826
+```
+
+because `Trial 0` was the best trial.
 
 #### Using `generate_lm.py` to create `lm.binary` and `vocab-500000.txt` files
 
