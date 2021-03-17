@@ -66,7 +66,7 @@ root@4b39be3b0ffc:/DeepSpeech# apt-get -y update && apt-get install -y sox
 Next, we will run the Common Voice importer that ships with DeepSpeech.
 
 ```
-root@3de3afbe5d6f:/DeepSpeech# bin/import_cv2.py persistent_data/cv-corpus-6.1-2020-12-11/id
+root@3de3afbe5d6f:/DeepSpeech# bin/import_cv2.py deepspeech-data/cv-corpus-6.1-2020-12-11/id
 ```
 
 This will process all the CV data into the `clips` directory, and it can now be used [for training](TRAINING.md).
