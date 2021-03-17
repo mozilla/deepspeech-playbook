@@ -9,9 +9,12 @@
     + [What is a scorer?](#what-is-a-scorer-)
     + [Building your own scorer](#building-your-own-scorer)
       - [Preparing the text file](#preparing-the-text-file)
+      - [Using `lm_optimizer.py` to generate values for the parameters `--default_alpha` and `--default_beta` that are used by the `generate_scorer_package` script](#using--lm-optimizerpy--to-generate-values-for-the-parameters----default-alpha--and----default-beta--that-are-used-by-the--generate-scorer-package--script)
+        * [Additional parameters for `lm_optimizer.py`](#additional-parameters-for--lm-optimizerpy-)
       - [Using `generate_lm.py` to create `lm.binary` and `vocab-500000.txt` files](#using--generate-lmpy--to-create--lmbinary--and--vocab-500000txt--files)
       - [Generating a `kenlm.scorer` file from `generate_scorer_package`](#generating-a--kenlmscorer--file-from--generate-scorer-package-)
-      - [Using the scorer file in training](#using-the-scorer-file-in-training)
+      - [Using the scorer file in model training](#using-the-scorer-file-in-model-training)
+
 
 ### What is a scorer?
 
@@ -105,7 +108,7 @@ lm_optimizer.py
 
 This script takes a set of test data (`--test_files`), and a `--checkpoint_dir` parameter and determines the optimal `--default_alpha` and `--default_beta` values.
 
-Call `lm_optimizer.py` and pass it the `.txt` file, `--train_files`, `--dev_files`, `--test_files` and a `--checkpoint_dir` directory.
+Call `lm_optimizer.py` and pass it the `--test_files` and a `--checkpoint_dir` directory.
 
 ```
 root@57e6bf4eeb1c:/DeepSpeech# python3 lm_optimizer.py \
