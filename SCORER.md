@@ -31,25 +31,33 @@ You may need to build your own scorer - your own _language model_ if:
 
 _This section assumes that you are using a Docker image and container for training, as outlined in the [environment](ENVIRONMENT.md) section. If you are not using the Docker image, then some of the scripts such as `generate_lm.py` will not be available in your environment._
 
-_This section also assumes that you have already [trained a model](TRAINING.md) and have stored checkpoints for the trained model. This is required to generate the `--default_alpha` and `--default_beta` parameters that are used by the `lm_optimizer.py` script._
+_This section assumes that you have already trained a model and have a set of **checkpoints** for that model. See the section on [training](TRAINING.md) for more information on **checkpoints**._
 
-The process for building your own scorer comprises the following steps:
+DeepSpeech uses an algorithm called [_connectionist temporal classification_](https://distill.pub/2017/ctc/) or CTC for short, to map between _input_ sequences of audio and _output_ sequences of characters. The mapping between _inputs_ and _outputs_ is called an _alignment_. The alignment between _inputs_ and _outputs_ is not one-to-one; many _inputs_ may make up an _output_. CTC is therefore a _probabilistic_ algorithm. This means that for each _input_ there are many possible _outputs_ that can be selected. A process call _beam search_ is used to identify the possible _outputs_ and select the one with the highest probability. A [language model](AM_vs_LM.md) or _scorer_ helps the _beam search_ algorithm select the most optimal _output_ value. This is why building your own _scorer_ is necessary for training a model on a narrow domain - otherwise the _beam search_ algorithm would probably select the wrong _output_.
 
-1. Having, or preparing, a text file (in `.txt` or `.txt.gz` format), with one phrase or word on each line. If you are training a speech recognition model for a particular domain - such as technical words, medical transcription, agricultural terms etc, then they would appear in the text file.
+The default _scorer_ used with DeepSpeech is trained on Librivox. It's a general model. But let's say that you want to train a speech recognition model for agriculture. If you have the phrase `tomatoes are ...`, a general scorer might identify `red` as the most likely next word - but an agricultural model might identify `ready` as the most likely next word.
 
-2. Using the `lm_optimizer.py` script with _checkpoints_ from a trained model to generate values for the parameters `--default_alpha` and `--default_beta` that are used by the `generate_scorer_package` script.
+The _scorer_ is only used during the _test_ stage of [training](TRAINING.md) (rather than at the _train_ or _validate_ stages) because this is where the _beam search_ decdoder determines which words are formed from the identified characters.
+
+The process for building your own _scorer_ has the following steps:
+
+1. Having, or preparing, a text file (in `.txt` or `.txt.gz` format), with one phrase or word on each line. If you are training a speech recognition model for a particular _domain_ - such as technical words, medical transcription, agricultural terms etc, then they should appear in the text file. The text file is used by the `generate_lm.py` script.
+
+2. Using the `lm_optimizer.py` with your dataset (your `.csv` files) and a set of _checkpoints_ to find optimal values of `--default_alpha` and `--default_beta`. The  `--default_alpha` and `--default_beta` parameters are used by the `generate_scorer_package` script to assign initial _weights_ to sequences of words.
 
 3. Using the `generate_lm.py` script which is distributed with DeepSpeech, along with the text file, to create two files, called `lm.binary` and `vocab-500000.txt`.
 
 4. Downloading the prebuilt `native_client` from the DeepSpeech repository on GitHub, and using the `generate_scorer_package` to create a `kenlm.scorer` file.
 
-5. Using the `kenlm.scorer` file as the _external_scorer_ passed to `DeepSpeech.py` during training.
+5. Using the `kenlm.scorer` file as the _external_scorer_ passed to `DeepSpeech.py`, and used for the _test_ phase. The `scorer` does not impact training; it is used for calculating `word error rate` (covered more in [testing](TESTING.md)).
 
 In the following example we will create a custom external scorer file for Bahasa Indonesia (BCP47: `id-ID`).
 
 #### Preparing the text file
 
-This is straightforward. In this example, we will use a file called `indonesian-sentences.txt`. This file has been created by copying phrases from the `train.tsv`, `validate.tsv` and `test.tsv` files in the Common Voice Indonesian dataset.
+This is straightforward. In this example, we will use a file called `indonesian-sentences.txt`. This file should contain phrases that you wish to prioritize recognising. For example, you may want to recognise place names, digits or medical phrases - and you will include these phrases in the `.txt` file.
+
+_These phrases should not be copied from `test.tsv`, `train.tsv` or `validated.tsv` as you will bias the resultant model._
 
 ```
 ~/deepspeech-data$ ls cv-corpus-6.1-2020-12-11/id
@@ -73,7 +81,20 @@ The `indonesian-sentences.txt` file is stored on the local filesystem in the `de
  476 -rw-rw-r--  1 root root  483481 Feb 24 19:02 indonesian-sentences.txt
 ```
 
-#### Using `lm_optimizer.py` with the text file to generate values for the parameters `--default_alpha` and `--default_beta` that are used by the `lm_optimizer.py` script
+The `indonesian-sentences.txt` file is formatted with one phrase per line, eg:
+
+```
+Kamar adik laki-laki saya lebih sempit daripada kamar saya.
+Ayah akan membunuhku.
+Ini pulpen.
+Akira pandai bermain tenis.
+Dia keluar dari ruangan tanpa mengatakan sepatah kata pun.
+Besok Anda akan bertemu dengan siapa.
+Aku mengerti maksudmu.
+Tolong lepas jasmu.
+```
+
+#### Using `lm_optimizer.py` to generate values for the parameters `--default_alpha` and `--default_beta` that are used by the `generate_scorer_package` script
 
 The `lm_optimizer.py` script is located in the `DeepSpeech` directory if you have set up your [environment][ENVIRONMENT.md] as outlined in the PlayBook.
 
@@ -82,19 +103,23 @@ root@57e6bf4eeb1c:/DeepSpeech# ls | grep lm_optimizer.py
 lm_optimizer.py
 ```
 
-This script takes a text file, e.g. `indonesian-sentences.txt`, and a set of _checkpoints_, and determines the optimal `--default_alpha` and `--default_beta` values. These are then passed to `generate_lm.py` in the next step.
+This script takes a set of test data (`--test_files`), and a `--checkpoint_dir` parameter and determines the optimal `--default_alpha` and `--default_beta` values.
 
-**This step assumes you already have a trained model, and a set of saved _checkpoints_. For more information on _checkpoints_, see the [training](TRAINING.md) page.**
-
-Call `lm_optimizer.py` and pass it the text file, `--train_files`, `--dev_files`, `--test_files` and a `--checkpoint_dir` directory.
+Call `lm_optimizer.py` and pass it the `.txt` file, `--train_files`, `--dev_files`, `--test_files` and a `--checkpoint_dir` directory.
 
 ```
 root@57e6bf4eeb1c:/DeepSpeech# python3 lm_optimizer.py \
->   deepspeech-data/indonesian-sentences.txt \
->   --train_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
->   --dev_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
->   --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
->   --checkpoint_dir deepspeech-data/checkpoints
+     --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+     --checkpoint_dir deepspeech-data/checkpoints
+```
+
+Remember, if you trained your model with a `--n_hidden` value that is different to the default (`1024`), you should pass the same `--n_hidden` value to `lm_optimizer.py`, for example:
+
+```
+root@57e6bf4eeb1c:/DeepSpeech# python3 lm_optimizer.py \
+     --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+     --checkpoint_dir deepspeech-data/checkpoints \
+     --n_hidden 4
 ```
 
 `lm_optimizer.py` will create a new _study_.
@@ -123,6 +148,28 @@ The optimal parameters `--default_alpha` and `--default_beta` are now known, and
 ```
 
 because `Trial 0` was the best trial.
+
+##### Additional parameters for `lm_optimizer.py`
+
+There are additional parameters that may be useful.
+
+* `--n_trials` specifies how many trials `lm_optimizer.py` should run to find the optimal values of `--default_alpha` and `--default_beta`. The default is `6`. You may wish to reduce `--n_trials`.
+
+* `--lm_alpha_max` specifies a maximum bound for `--default_alpha`. The default is `0.931289039105002`. You may wish to reduce `--lm_alpha_max`.
+
+* `--lm_beta_max` specifies a maximum bound for `--default_beta`. The default is `1.1834137581510284`. You may wish to reduce `--lm_beta_max`.
+
+For example:
+
+```
+root@57e6bf4eeb1c:/DeepSpeech# python3 lm_optimizer.py \
+     --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
+     --checkpoint_dir deepspeech-data/checkpoints \
+     --n_hidden 4 \
+     --n_trials 3 \
+     --lm_alpha_max 0.92 \
+     --lm_beta_max 1.05
+```
 
 #### Using `generate_lm.py` to create `lm.binary` and `vocab-500000.txt` files
 
@@ -167,7 +214,7 @@ Next, we need to install the `native_client` package, which contains the `genera
 
 The `generate_scorer_package`, once installed via the `native client` package, is usable on _all platforms_ supported by DeepSpeech. This is so that developers can generate scorers _on-device_, such as on an Android device, or Raspberry Pi 3.
 
-To install `generate_scover_package`, first download the relevant `native client` package from the [DeepSpeech GitHub releases page](https://github.com/mozilla/DeepSpeech/releases/tag/v0.9.3) into the `data/lm` directory. The Docker image uses Ubuntu Linux, so you should use the `native_client.amd64.cuda.linux.tar.xz` package.
+To install `generate_scorer_package`, first download the relevant `native client` package from the [DeepSpeech GitHub releases page](https://github.com/mozilla/DeepSpeech/releases/tag/v0.9.3) into the `data/lm` directory. The Docker image uses Ubuntu Linux, so you should use the `native_client.amd64.cuda.linux.tar.xz` package.
 
 The easiest way to do this is to use `wget`:
 
