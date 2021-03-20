@@ -116,7 +116,7 @@ root@57e6bf4eeb1c:/DeepSpeech# python3 lm_optimizer.py \
      --checkpoint_dir deepspeech-data/checkpoints
 ```
 
-Remember, if you trained your model with a `--n_hidden` value that is different to the default (`1024`), you should pass the same `--n_hidden` value to `lm_optimizer.py`, for example:
+In general, any change to _geometry_ - the shape of the neural network - needs to be reflected here, otherwise the _checkpoint_ will fail to load. It's always a good idea to record the parameters you used to train a model. For example, if you trained your model with a `--n_hidden` value that is different to the default (`1024`), you should pass the same `--n_hidden` value to `lm_optimizer.py`, i.e:
 
 ```
 root@57e6bf4eeb1c:/DeepSpeech# python3 lm_optimizer.py \
@@ -155,6 +155,8 @@ because `Trial 0` was the best trial.
 ##### Additional parameters for `lm_optimizer.py`
 
 There are additional parameters that may be useful.
+
+**Please be aware that these parameters may increase processing time significantly - even to a few days - depending on your hardware.**
 
 * `--n_trials` specifies how many trials `lm_optimizer.py` should run to find the optimal values of `--default_alpha` and `--default_beta`. The default is `6`. You may wish to reduce `--n_trials`.
 
@@ -217,24 +219,12 @@ Next, we need to install the `native_client` package, which contains the `genera
 
 The `generate_scorer_package`, once installed via the `native client` package, is usable on _all platforms_ supported by DeepSpeech. This is so that developers can generate scorers _on-device_, such as on an Android device, or Raspberry Pi 3.
 
-To install `generate_scorer_package`, first download the relevant `native client` package from the [DeepSpeech GitHub releases page](https://github.com/mozilla/DeepSpeech/releases/tag/v0.9.3) into the `data/lm` directory. The Docker image uses Ubuntu Linux, so you should use the `native_client.amd64.cuda.linux.tar.xz` package.
+To install `generate_scorer_package`, first download the relevant `native client` package from the [DeepSpeech GitHub releases page](https://github.com/mozilla/DeepSpeech/releases/tag/v0.9.3) into the `data/lm` directory.  The Docker image uses Ubuntu Linux, so you should use either the `native_client.amd64.cuda.linux.tar.xz` package if you are using `cuda` or the `native_client.amd64.cpu.linux.tar.xz` package if not.
 
-The easiest way to do this is to use `wget`:
-
-```
-root@dcb62aada58b:/DeepSpeech# cd data/lm
-root@dcb62aada58b:/DeepSpeech/data/lm# wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/native_client.amd64.cuda.linux.tar.xz
---2021-02-26 21:45:10--  https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/native_client.amd64.cuda.linux.tar.xz
-
-native_client.amd64 100%[===================>]  13.43M  11.2MB/s    in 1.2s    
-
-2021-02-26 21:45:12 (11.2 MB/s) - ‘native_client.amd64.cuda.linux.tar.xz’ saved [14086680/14086680]
-```
-
-Next, extract the package using `tar -xvf`:
+The easiest way to download the package and extract it is using `curl [URL] | tar -Jxvf [FILENAME]`:
 
 ```
-root@dcb62aada58b:/DeepSpeech/data/lm# tar -xvf native_client.amd64.cuda.linux.tar.xz
+root@dcb62aada58b:/DeepSpeech/data/lm# curl https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/native_client.amd64.cuda.linux.tar.xz | tar -Jxvf native_client.amd64.cuda.linux.tar.xz
 libdeepspeech.so
 generate_scorer_package
 LICENSE
@@ -259,6 +249,29 @@ Doesn't look like a character based (Bytes Are All You Need) model.
 Package created in kenlm-indonesian.scorer.
 ```
 
+The message `Doesn't look like a character based (Bytes Are All You Need) model.` is _not_ an error.
+
+If you receive the error message:
+
+```
+--force_bytes_output_mode was not specified, using value infered from vocabulary contents: false
+Error: Can’t parse scorer file, invalid header. Try updating your scorer file.
+Error loading language model file: Invalid magic in trie header.
+```
+
+then you should add the parameter `--force_bytes_output_mode` when calling `generate_scorer_package`. This error most usually occurs when training languages that use [alphabets](ALPHABET.md) that contain a large number of characters, such as Mandarin. `--force_bytes_output_mode` forces the _decoder_ to predict `UTF-8` bytes instead of characters. For more information, [please see the DeepSpeech documentation](https://deepspeech.readthedocs.io/en/master/Decoder.html#bytes-output-mode). For example:
+
+```
+root@dcb62aada58b:/DeepSpeech/data/lm# ./generate_scorer_package \
+  --alphabet ../alphabet.txt  \
+  --lm ../../deepspeech-data/indonesian-scorer/lm.binary
+  --vocab ../../deepspeech-data/indonesian-scorer/vocab-500000.txt \
+  --package kenlm-indonesian.scorer \
+  --default_alpha 0.931289039105002 \
+  --default_beta 1.1834137581510284 \
+  --force_bytes_output_mode True
+```
+
 The `kenlm-indonesian.scorer` file is stored in the `/DeepSpeech/data/lm` directory within the Docker container. Copy it to the `deepspeech-data` directory.
 
 ```
@@ -275,26 +288,17 @@ total 1820
  52 -rw-r--r-- 1 root root  51178 Feb 24 08:05 vocab-500000.txt
 ```
 
-#### Using the scorer file in model training
+#### Using the scorer file during the test phase of training
 
-You now have your own scorer file that can be used during the model training process using the `--scorer` parameter.
+You now have your own scorer file that can be used during the test phase of model training process using the `--scorer` parameter.
 
 For example:
 
 ```
 python3 DeepSpeech.py \
-  --train_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/train.csv \
-  --dev_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/dev.csv \
   --test_files deepspeech-data/cv-corpus-6.1-2020-12-11/id/clips/test.csv \
   --checkpoint_dir deepspeech-data/checkpoints-newscorer-id \
   --export_dir deepspeech-data/exported-model-newscorer-id \
-  --train_cudnn true \
-  --early_stop true \
-  --es_epochs 30 \
-  --es_min_delta 0.03 \
-  --reduce_lr_on_plateau true \
-  --plateau_reduction 0.2 \
-  --plateau_epochs 3 \
   --n_hidden 2048 \
   --scorer deepspeech-data/indonesian-scorer/kenlm.scorer
 ```
