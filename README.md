@@ -72,7 +72,7 @@ Here, we've linked to several resources that you may find helpful; they're liste
 
 # How you can help provide feedback on the DeepSpeech PlayBook
 
-You can help to make the DeepSpeech PlayBook even better by providing [via a GitHub Issue](LINK TO COME WHEN REPO HOME IS SORTED)
+You can help to make the DeepSpeech PlayBook even better by providing [via a GitHub Issue](https://github.com/mozilla/deepspeech-playbook/issues)
 
 * Please _try these instructions_, particularly for building a Docker image and running a Docker container, on multiple distributions of Linux so that we can identify corner cases.
 
