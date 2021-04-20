@@ -1,4 +1,4 @@
-[Home](README.md) | [Previous - Deploying your model](DEPLOYMENT.md)
+[Home](README.md) | [Previous - Deploying your model](DEPLOYMENT.md) | [Next - Setting up Continuous Integration](CONTINUOUS_INTEGRATION.md)
 
 # Example applications of DeepSpeech
 
@@ -44,4 +44,4 @@ One example of a voice-controlled application using DeepSpeech is the [voice add
 
 ---
 
-[Home](README.md) | [Previous - Deploying your model](DEPLOYMENT.md)
+[Home](README.md) | [Previous - Deploying your model](DEPLOYMENT.md) | [Next - Setting up Continuous Integration](CONTINUOUS_INTEGRATION.md)
