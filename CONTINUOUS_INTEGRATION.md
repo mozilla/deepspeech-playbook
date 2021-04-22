@@ -134,7 +134,7 @@ total 64
 4 drwxrwxr-x  2 root root 4096 Apr 20 22:52 win-install-sox/
 ```
 
-Within each of these directories is a `.yml` file that defines an _Action_. Each _Action_ calls a `bash` script. The `bash` scripts are held in the `ci_scripts` directory in the `DeepSpeech` repository:
+Within each of these directories is a `.yml` file that defines an _Action_. Each _Action_ calls a script. The scripts are usually written in `bash` or `node.js`, depending on which makes it easier to interact with the GitHub API. The scripts are held in the `ci_scripts` directory in the `DeepSpeech` repository:
 
 ```
 ~/DeepSpeech/ci_scripts$ ls
@@ -177,13 +177,7 @@ total 164
 
 ### Runners
 
-A _Runner_ is a server that listens for available _Jobs_ to run. The _Runner_ runs each _Job_ one at a time and then reports the results back to GitHub. A _Runner_ can be installed on a cloud server, or you can use the _Runner_ hosted by GitHub.
-
-If you are building DeepSpeech on particular hardware, or a non-Ubuntu variant of Linux (such as Arch), then you will need to [host your own _Runner_](https://docs.github.com/en/actions/hosting-your-own-runners).
-
-## Running continuous integration from GitHub
-
-In this example, we're going to assume that you will use a _Runner_ hosted on GitHub to perform continuous integration.
+A _Runner_ is a server that listens for available _Jobs_ to run. The _Runner_ runs each _Job_ one at a time and then reports the results back to GitHub. Here, we assume you will use the built-in _Runner_ on GitHub to perform continuous integration.
 
 This example assumes you have cloned DeepSpeech to the location:
 
@@ -191,8 +185,8 @@ This example assumes you have cloned DeepSpeech to the location:
 
 1. Navigate to your GitHub repository's Settings -> Actions. This should be located at `https://github.com/{USERNAME}/DeepSpeech/settings/actions`. It's a good idea for security to change the default Action Permissions from "Allow all actions" to "Allow local actions only".
 
-2. Next, navigate to your GitHub repository's Actions. This should be located at `https://github.com/{USERNAME}/DeepSpeech/actions`. You should see three _Workflows_ already set up. GitHub recognises these from the files stored in the `.github/workflows` directory. The _Workflows_ are set up to execute on a `push` event.
+2. Next, navigate to your GitHub repository's Actions. This should be located at `https://github.com/{USERNAME}/DeepSpeech/actions`. You should see three _Workflows_ already set up. GitHub recognises these from the files stored in the `.github/workflows` directory. Remember from the [Events](#Events) section earlier in this tutorial that the _Workflows_ are set up to trigger on `pull_request` and `push` events that occur on the `master` branch of the code.
 
-3. So, to test that they are working, we need to make a change to the `DeepSpeech` repository to trigger a `push` event. Navigate to the repository's Code listing. This should be at `https://github.com/{USERNAME}/DeepSpeech`. Add a file called `test-workflow.txt` containing dummy text and commit the change. This should trigger a `push` event, and the _Workflows_ will activate. You can monitor the _Workflows_ executing from the repository's Actions page. This is at `https://github.com/{USERNAME}/DeepSpeech/actions`. The _Workflow_ takes around 4hrs 15mins to run using the built-in GitHub Runner.
+3. So, to test that they are working, we need to make a change to the `DeepSpeech` repository that triggers one of those events. Here, will create a `push` event because it's easier to demonstrate. Navigate to the repository's Code listing. This should be at `https://github.com/{USERNAME}/DeepSpeech`. Add a file called `test-workflow.txt` containing dummy text and commit the change. This should trigger a `push` event, and the _Workflows_ will activate. You can monitor the _Workflows_ executing from the repository's Actions page. This is at `https://github.com/{USERNAME}/DeepSpeech/actions`.
 
 [Home](README.md) | [Previous - Examples of using DeepSpeech](EXAMPLES.md)
