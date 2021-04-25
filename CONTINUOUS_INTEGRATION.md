@@ -189,4 +189,6 @@ This example assumes you have cloned DeepSpeech to the location:
 
 3. So, to test that they are working, we need to make a change to the `DeepSpeech` repository that triggers one of those events. Here, will create a `push` event because it's easier to demonstrate. Navigate to the repository's Code listing. This should be at `https://github.com/{USERNAME}/DeepSpeech`. Add a file called `test-workflow.txt` containing dummy text and commit the change. This should trigger a `push` event, and the _Workflows_ will activate. You can monitor the _Workflows_ executing from the repository's Actions page. This is at `https://github.com/{USERNAME}/DeepSpeech/actions`.
 
+It's good to be aware that the first time that your GitHub Actions run, the _Workflow_ will take around four hours to execute. This is due to the TensorFlow build cache. Subsequent runs will be much shorter; typically we have seen them take just over an hour to execute. 
+
 [Home](README.md) | [Previous - Examples of using DeepSpeech](EXAMPLES.md)
