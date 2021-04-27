@@ -9,7 +9,7 @@
     + [Events](#events)
     + [Jobs, Steps and Actions](#jobs--steps-and-actions)
     + [Runners](#runners)
-  * [Running continuous integration from GitHub](#running-continuous-integration-from-github)
+    + [Tensorflow builds, cache limitations and how they have been worked around](#tensorflow-builds--cache-limitations-and-how-they-have-been-worked-around)
 
 _This section of the PlayBook assumes that you have [forked](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) DeepSpeech and wish to customize it for your own purposes. The intent of this section is to provide guidance on setting up [continuous integration](https://en.wikipedia.org/wiki/Continuous_integration) using [GitHub Actions](https://docs.github.com/en/actions/learn-github-actions/introduction-to-github-actions)._
 
@@ -189,6 +189,25 @@ This example assumes you have cloned DeepSpeech to the location:
 
 3. So, to test that they are working, we need to make a change to the `DeepSpeech` repository that triggers one of those events. Here, will create a `push` event because it's easier to demonstrate. Navigate to the repository's Code listing. This should be at `https://github.com/{USERNAME}/DeepSpeech`. Add a file called `test-workflow.txt` containing dummy text and commit the change. This should trigger a `push` event, and the _Workflows_ will activate. You can monitor the _Workflows_ executing from the repository's Actions page. This is at `https://github.com/{USERNAME}/DeepSpeech/actions`.
 
-It's good to be aware that the first time that your GitHub Actions run, the _Workflow_ will take around four hours to execute. This is due to the TensorFlow build cache. Subsequent runs will be much shorter; typically we have seen them take just over an hour to execute. 
+It's good to be aware that the first time that your GitHub Actions run, the _Workflow_ will take around four hours to execute. This is due to the TensorFlow build cache. Subsequent runs will be much shorter; typically we have seen them take just over an hour to execute.
+
+### Tensorflow builds, cache limitations and how they have been worked around
+
+As part of understanding DeepSpeech's continuous improvement pipeline, it is useful to know about the limitations of the GitHub platform, and how they have been worked around.
+
+* Building TensorFlow for DeepSpeech takes approximately 3 hours using GitHub Actions. However, TensorFlow _itself_ does not change upon each `pull request` - unless TensorFlow itself is being changed (such as a version upgrade, which is infrequent).
+
+* Additionally, the GitHub cache is limited to 5GB for the `DeepSpeech` repository. This cache size is smaller than the build cache required for TensorFlow. That is, building just TensorFlow would consume _all_ the cache for the entire repository.
+
+* To work around this limitation, the TensorFlow library build is split into two parts. This allows GitHub Actions to run more quickly when a `git commit` or `pull request` event occurs. The two parts are:
+
+  - a TensorFlow prebuild cache
+  - the actual code of the TensorFlow library
+
+That is, the cache is prebuilt _manually_ as part of the build pipeline, so that it does not exceed the capacity of GitHub Actions.
+
+* The _Actions_ used to facilitate this are `get_cache_key` and `check_artifact_exists`. They are in the `./github/actions` directory of the `DeepSpeech` repository. `get_cache_key` allows a cache to be accessed. `check_artifact_exists` determines whether an artifact has already been built - whether it is `missing` or `found`. This allows decisions around whether to build the artifact in the _Workflow_ to be made.
+
+For [more information on caching _Workflow_ dependencies in GitHub Actions, please see the GitHub documentation](https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows).
 
 [Home](README.md) | [Previous - Examples of using DeepSpeech](EXAMPLES.md)
