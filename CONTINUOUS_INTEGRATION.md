@@ -204,7 +204,7 @@ As part of understanding DeepSpeech's continuous improvement pipeline, it is use
   - a TensorFlow prebuild cache
   - the actual code of the TensorFlow library
 
-That is, the cache is prebuilt _manually_ as part of the build pipeline, so that it does not exceed the capacity of GitHub Actions.
+That is, the cache is _prebuilt_ as part of the build pipeline, so that it does not exceed the capacity of GitHub Actions.
 
 * The _Actions_ used to facilitate this are `get_cache_key` and `check_artifact_exists`. They are in the `./github/actions` directory of the `DeepSpeech` repository. `get_cache_key` allows a cache to be accessed. `check_artifact_exists` determines whether an artifact has already been built - whether it is `missing` or `found`. This allows decisions around whether to build the artifact in the _Workflow_ to be made.
 
