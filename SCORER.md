@@ -224,7 +224,7 @@ To install `generate_scorer_package`, first download the relevant `native client
 The easiest way to download the package and extract it is using `curl [URL] | tar -Jxvf [FILENAME]`:
 
 ```
-root@dcb62aada58b:/DeepSpeech/data/lm# curl https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/native_client.amd64.cuda.linux.tar.xz | tar -Jxvf native_client.amd64.cuda.linux.tar.xz
+root@dcb62aada58b:/DeepSpeech/data/lm# curl -L https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/native_client.amd64.cuda.linux.tar.xz -o native_client.amd64.cuda.linux.tar.xz && tar -Jxvf native_client.amd64.cuda.linux.tar.xz
 libdeepspeech.so
 generate_scorer_package
 LICENSE
@@ -232,6 +232,8 @@ deepspeech
 deepspeech.h
 README.mozilla
 ```
+
+_NOTE: `curl -L` is used here to follow any 302 redirect headers that are served. 
 
 You can now generate a `ken.lm` scorer file.
 
